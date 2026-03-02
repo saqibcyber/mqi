@@ -1,0 +1,112 @@
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { getProgramCategories, getProgramsPage, getProgramsForListing } from "@/lib/sanityQueries";
+import { getIcon } from "@/lib/icons";
+import { urlFor } from "@/lib/sanity";
+import type { ProgramForListing } from "@/lib/sanityQueries";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
+const Programs = () => {
+  const { data: programsPageData } = useQuery({
+    queryKey: ["programsPage"],
+    queryFn: getProgramsPage,
+  });
+  const { data: categories = [] } = useQuery({
+    queryKey: ["programCategories"],
+    queryFn: getProgramCategories,
+  });
+  const { data: programs = [] } = useQuery({
+    queryKey: ["programsForListing"],
+    queryFn: getProgramsForListing,
+  });
+
+  const pageTitle = programsPageData?.title ?? "Our Programs";
+  const pageSubtitle = programsPageData?.subtitle ?? "Explore our comprehensive range of Qur'anic education programs designed for learners at every stage.";
+
+  const programsByCategoryId = (programs as ProgramForListing[]).reduce<Record<string, ProgramForListing[]>>((acc, prog) => {
+    const id = prog.category?._id ?? "_none";
+    if (!acc[id]) acc[id] = [];
+    acc[id].push(prog);
+    return acc;
+  }, {});
+
+  return (
+    <main className="py-16 md:py-24">
+      <div className="container">
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">{pageTitle}</h1>
+          <div className="geometric-divider w-24 mx-auto mb-4" />
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            {pageSubtitle}
+          </p>
+        </motion.div>
+
+        <div className="space-y-20">
+          {categories.map((cat, ci) => {
+            const Icon = getIcon(cat.icon);
+            const categoryPrograms = programsByCategoryId[cat._id] ?? [];
+            if (categoryPrograms.length === 0) return null;
+            return (
+              <motion.section key={cat._id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground">{cat.title}</h2>
+                    <p className="text-muted-foreground text-sm mt-1">{cat.description}</p>
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {categoryPrograms.map((prog) => {
+                    const imageUrl = prog.mainImage?.asset?.url
+                      ? urlFor(prog.mainImage).width(600).height(340).fit("crop").url()
+                      : null;
+                    const categorySlug = prog.category?.slug ?? cat.slug;
+                    return (
+                      <Link key={prog._id} to={`/programs/${categorySlug}/${prog.slug}`}>
+                        <Card className="h-full overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50">
+                          {imageUrl && (
+                            <div className="aspect-[16/9] overflow-hidden">
+                              <img src={imageUrl} alt={prog.title} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                            </div>
+                          )}
+                          <CardContent className="p-6 space-y-3">
+                            <h3 className="text-lg font-semibold text-foreground">{prog.title}</h3>
+                            {(prog.shortDescription || prog.overview) && (
+                              <p className="text-sm text-muted-foreground line-clamp-2">{prog.shortDescription ?? prog.overview}</p>
+                            )}
+                            <div className="flex flex-wrap gap-2">
+                              {prog.audience && (
+                                <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">{prog.audience}</span>
+                              )}
+                              {prog.schedule && (
+                                <span className="text-xs px-3 py-1 rounded-full bg-accent/20 text-accent-foreground font-medium">{prog.schedule}</span>
+                              )}
+                            </div>
+                            <Button variant="link" className="p-0 h-auto text-primary font-medium">
+                              Learn More →
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </motion.section>
+            );
+          })}
+        </div>
+      </div>
+    </main>
+  );
+};
+
+export default Programs;
