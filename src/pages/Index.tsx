@@ -4,17 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import heroImage from "@/assets/hero-classroom.jpg";
 import { useQuery } from "@tanstack/react-query";
-import { getHomepage, getTeachers } from "@/lib/sanityQueries";
+import { getHomepage } from "@/lib/sanityQueries";
 import { getIcon } from "@/lib/icons";
-import { urlFor } from "@/lib/sanity";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { User } from "lucide-react";
 
 const defaultProgramCategories = [
   { title: "Courses", description: "Flexible courses in Qur'an recitation, Tajweed, Arabic, and Islamic Studies for all ages and levels.", icon: "BookOpen", to: "/programs" },
@@ -55,19 +46,12 @@ const Index = () => {
   const whyChooseUsSectionTitle = homepage?.whyChooseUsSectionTitle ?? "Why Choose Us";
   const whyChooseUsSectionSubtitle = homepage?.whyChooseUsSectionSubtitle ?? "We are committed to providing the highest quality Qur'anic education in a nurturing environment.";
   const whyChooseUsItems = homepage?.whyChooseUsItems?.length ? homepage.whyChooseUsItems : defaultWhyChooseUs;
-  const teachersSectionTitle = homepage?.teachersSectionTitle ?? "Our Teachers";
-  const teachersSectionSubtitle = homepage?.teachersSectionSubtitle ?? "Meet our dedicated instructors who bring excellence to Qur'anic education.";
   const ctaTitle = homepage?.ctaTitle ?? "Begin Your Qur'anic Journey Today";
   const ctaSubtitle = homepage?.ctaSubtitle ?? "Enroll in one of our programs and join a community dedicated to learning, growth, and spiritual development.";
   const ctaButtons = homepage?.ctaButtons?.length ? homepage.ctaButtons : [
     { label: "View Programs", to: "/programs", variant: "primary" as const },
     { label: "Support Us", to: "/donate", variant: "accent" as const },
   ];
-
-  const { data: teachers = [] } = useQuery({
-    queryKey: ["teachers"],
-    queryFn: getTeachers,
-  });
 
   return (
     <main>
@@ -172,63 +156,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* Our Teachers */}
-      {teachers.length > 0 && (
-        <section className="py-16 md:py-24">
-          <div className="container">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground">{teachersSectionTitle}</h2>
-              <div className="geometric-divider w-24 mx-auto mt-4 mb-4" />
-              <p className="text-muted-foreground max-w-2xl mx-auto">{teachersSectionSubtitle}</p>
-            </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="relative px-12">
-              <Carousel opts={{ align: "start", loop: true }} className="w-full">
-                <CarouselContent className="-ml-4">
-                  {teachers.map((teacher) => {
-                    const imageUrl = teacher.image?.asset?.url
-                      ? urlFor(teacher.image).width(320).height(320).fit("fill").url()
-                      : null;
-                    return (
-                      <CarouselItem key={teacher._id} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                        <Link to="/teachers">
-                          <Card className="h-full border-border/50 overflow-hidden hover:shadow-lg transition-all">
-                            <div className="aspect-square bg-muted/50 relative overflow-hidden">
-                              {imageUrl ? (
-                                <img src={imageUrl} alt={teacher.name ?? "Teacher"} className="w-full h-full object-cover" />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                  <User className="h-12 w-12 text-muted-foreground/50" />
-                                </div>
-                              )}
-                            </div>
-                            <CardContent className="p-4">
-                              <h3 className="font-semibold text-foreground">{teacher.name}</h3>
-                              {teacher.role && <p className="text-xs text-primary font-medium mt-0.5">{teacher.role}</p>}
-                              {teacher.shortDescription && (
-                                <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{teacher.shortDescription}</p>
-                              )}
-                            </CardContent>
-                          </Card>
-                        </Link>
-                      </CarouselItem>
-                    );
-                  })}
-                </CarouselContent>
-                <CarouselPrevious className="-left-2 sm:-left-4" />
-                <CarouselNext className="-right-2 sm:-right-4" />
-              </Carousel>
-            </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mt-8">
-              <Link to="/teachers">
-                <Button variant="outline" className="rounded-full">
-                  View All Teachers
-                </Button>
-              </Link>
-            </motion.div>
-          </div>
-        </section>
-      )}
 
       {/* CTA Banner */}
       <section className="py-16 md:py-20 bg-secondary">

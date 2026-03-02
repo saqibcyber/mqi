@@ -9,17 +9,6 @@ import { blogPage } from './blogPage'
 import { careerRole, careersPage } from './careerRole'
 import { contactInfoItem, contactPage } from './contactPage'
 import { donateTrustBullet, donatePage } from './donatePage'
-import { teacher, teachersPage } from './teacher'
-import {
-  page,
-  sectionHero,
-  sectionRichText,
-  sectionImage,
-  sectionImageGallery,
-  sectionProgramListing,
-  sectionFormEmbed,
-  sectionCta,
-} from './pageTemplate'
 
 export const schemaTypes = [
   navLink,
@@ -39,15 +28,4 @@ export const schemaTypes = [
   contactPage,
   donateTrustBullet,
   donatePage,
-  teacher,
-  teachersPage,
-  // Page template system
-  sectionHero,
-  sectionRichText,
-  sectionImage,
-  sectionImageGallery,
-  sectionProgramListing,
-  sectionFormEmbed,
-  sectionCta,
-  page,
 ]

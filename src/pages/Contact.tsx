@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { getContactPage } from "@/lib/sanityQueries";
-import { JotformEmbed } from "@/components/JotformEmbed";
+import { getJotformEmbedUrl } from "@/lib/jotform";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -33,6 +33,8 @@ const Contact = () => {
   const pageTitle = contactPageData?.title ?? "Contact Us";
   const pageSubtitle = contactPageData?.subtitle ?? "We'd love to hear from you. Reach out with questions about our programs or to schedule a visit.";
   const formTitle = contactPageData?.formTitle ?? "Send us a Message";
+  const jotformUrl = contactPageData?.jotformUrl;
+  const embedUrl = getJotformEmbedUrl(jotformUrl);
   const contactInfo = (contactPageData?.contactInfo?.length ? contactPageData.contactInfo : defaultContactInfo) as Array<{ type: string; title?: string; content?: string }>;
 
   return (
@@ -52,12 +54,20 @@ const Contact = () => {
             <Card className="border-border/50">
               <CardContent className="p-6 md:p-8">
                 <h2 className="text-xl font-semibold text-foreground mb-6">{formTitle}</h2>
-                <JotformEmbed
-                  formUrlOrId={contactPageData?.jotformUrl}
-                  minHeight={500}
-                  title="Contact form"
-                  emptyMessage="No contact form is configured. Add a Jotform URL in Sanity (Contact Page)."
-                />
+                {embedUrl ? (
+                  <div className="w-full min-h-[500px] rounded-lg overflow-hidden border border-border/50 bg-muted/30">
+                    <iframe
+                      title="Contact form"
+                      src={embedUrl}
+                      className="w-full h-full min-h-[500px] border-0"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
+                    <AlertCircle className="h-10 w-10 mb-3 opacity-60" />
+                    <p>No contact form is configured. Add a Jotform URL in Sanity (Contact Page).</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </motion.div>

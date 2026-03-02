@@ -92,11 +92,11 @@ const Careers = () => {
                   </>
                 )}
 
-                {/* Apply form – inline, expand/collapse, no card wrapper */}
-                <section className="mt-10 pt-8 border-t border-border/50">
+                {/* Apply form – inline, expand/collapse */}
+                <Card className="border-primary/20 bg-primary/5">
                   <Collapsible open={applyFormOpen} onOpenChange={setApplyFormOpen}>
                     <CollapsibleTrigger asChild>
-                      <button className="w-full py-4 text-left flex items-center justify-between gap-4 rounded-lg hover:bg-muted/50 transition-colors -mx-2 px-2">
+                      <button className="w-full p-6 text-left flex items-center justify-between gap-4 rounded-lg hover:bg-primary/10 transition-colors">
                         <div>
                           <h3 className="text-xl font-semibold text-foreground">Apply for this Position</h3>
                           <p className="text-sm text-muted-foreground mt-1">Submit your application via the form below.</p>
@@ -104,16 +104,18 @@ const Careers = () => {
                         {applyFormOpen ? <ChevronUp className="h-5 w-5 shrink-0" /> : <ChevronDown className="h-5 w-5 shrink-0" />}
                       </button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-6">
-                      <JotformEmbed
-                        formUrlOrId={role.jotformLink}
-                        minHeight={480}
-                        title={`Apply: ${role.title}`}
-                        emptyMessage="No application form is configured for this role."
-                      />
+                    <CollapsibleContent>
+                      <CardContent className="pt-0 pb-6">
+                        <JotformEmbed
+                          formUrlOrId={role.jotformLink}
+                          minHeight={480}
+                          title={`Apply: ${role.title}`}
+                          emptyMessage="No application form is configured for this role."
+                        />
+                      </CardContent>
                     </CollapsibleContent>
                   </Collapsible>
-                </section>
+                </Card>
               </>
             )}
           </motion.div>

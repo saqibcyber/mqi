@@ -9,12 +9,10 @@ import Index from "./pages/Index";
 import Programs from "./pages/Programs";
 import ProgramDetail from "./pages/ProgramDetail";
 import Careers from "./pages/Careers";
-import Teachers from "./pages/Teachers";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import Donate from "./pages/Donate";
-import TemplatePage from "./pages/TemplatePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,12 +31,10 @@ const App = () => (
               <Route path="/programs" element={<Programs />} />
               <Route path="/programs/:category/:programSlug" element={<ProgramDetail />} />
               <Route path="/careers" element={<Careers />} />
-              <Route path="/teachers" element={<Teachers />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/donate" element={<Donate />} />
-              <Route path="/page/:slug" element={<TemplatePage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

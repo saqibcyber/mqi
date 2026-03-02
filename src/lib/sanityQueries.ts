@@ -50,28 +50,9 @@ export interface Homepage {
   whyChooseUsSectionTitle?: string;
   whyChooseUsSectionSubtitle?: string;
   whyChooseUsItems?: WhyChooseUsItem[];
-  teachersSectionTitle?: string;
-  teachersSectionSubtitle?: string;
   ctaTitle?: string;
   ctaSubtitle?: string;
   ctaButtons?: CtaButton[];
-}
-
-export interface Teacher {
-  _id: string;
-  name?: string;
-  role?: string;
-  shortDescription?: string;
-  image?: { asset?: { url: string }; _type?: string };
-  order?: number;
-}
-
-export interface TeachersPage {
-  title?: string;
-  intro?: string;
-  seoTitle?: string;
-  seoDescription?: string;
-  ogImage?: { asset?: { url: string }; _type?: string };
 }
 
 export interface ProgramCategoryRef {
@@ -234,8 +215,6 @@ const HOMEPAGE_QUERY = `*[_type == "homepage"][0]{
   whyChooseUsSectionTitle,
   whyChooseUsSectionSubtitle,
   whyChooseUsItems[]{ icon, title, description },
-  teachersSectionTitle,
-  teachersSectionSubtitle,
   ctaTitle,
   ctaSubtitle,
   ctaButtons[]{ label, to, variant }
@@ -352,22 +331,6 @@ const CONTACT_PAGE_QUERY = `*[_type == "contactPage"][0]{
   mapEmbedUrl
 }`;
 
-const TEACHERS_QUERY = `*[_type == "teacher"] | order(order asc, name asc){
-  _id,
-  name,
-  role,
-  shortDescription,
-  image ${imageProjection}
-}`;
-
-const TEACHERS_PAGE_QUERY = `*[_type == "teachersPage"][0]{
-  title,
-  intro,
-  seoTitle,
-  seoDescription,
-  ogImage ${imageProjection}
-}`;
-
 const DONATE_PAGE_QUERY = `*[_type == "donatePage"][0]{
   title,
   subtitle,
@@ -429,108 +392,4 @@ export async function getContactPage(): Promise<ContactPage | null> {
 
 export async function getDonatePage(): Promise<DonatePage | null> {
   return sanityClient.fetch<DonatePage | null>(DONATE_PAGE_QUERY);
-}
-
-export async function getTeachers(): Promise<Teacher[]> {
-  return sanityClient.fetch<Teacher[]>(TEACHERS_QUERY);
-}
-
-export async function getTeachersPage(): Promise<TeachersPage | null> {
-  return sanityClient.fetch<TeachersPage | null>(TEACHERS_PAGE_QUERY);
-}
-
-// --- Page (template) types and query ---
-export interface PageSectionHero {
-  _type: 'sectionHero';
-  _key: string;
-  title?: string;
-  subtitle?: string;
-  image?: { asset?: { url: string }; _type?: string };
-  ctaButtons?: { label: string; to: string }[];
-}
-
-export interface PageSectionRichText {
-  _type: 'sectionRichText';
-  _key: string;
-  heading?: string;
-  content?: unknown[];
-}
-
-export interface PageSectionImage {
-  _type: 'sectionImage';
-  _key: string;
-  image?: { asset?: { url: string }; _type?: string };
-  caption?: string;
-}
-
-export interface PageSectionImageGallery {
-  _type: 'sectionImageGallery';
-  _key: string;
-  heading?: string;
-  images?: { asset?: { url: string }; _type?: string }[];
-}
-
-export interface PageSectionProgramListing {
-  _type: 'sectionProgramListing';
-  _key: string;
-  heading?: string;
-  subheading?: string;
-  limit?: number;
-}
-
-export interface PageSectionFormEmbed {
-  _type: 'sectionFormEmbed';
-  _key: string;
-  sectionTitle?: string;
-  jotformUrl?: string;
-}
-
-export interface PageSectionCta {
-  _type: 'sectionCta';
-  _key: string;
-  title?: string;
-  subtitle?: string;
-  buttons?: { label: string; to: string }[];
-}
-
-export type PageSection =
-  | PageSectionHero
-  | PageSectionRichText
-  | PageSectionImage
-  | PageSectionImageGallery
-  | PageSectionProgramListing
-  | PageSectionFormEmbed
-  | PageSectionCta;
-
-export interface TemplatePage {
-  _id: string;
-  title?: string;
-  slug?: string;
-  sections?: PageSection[];
-}
-
-const PAGE_BY_SLUG_QUERY = `*[_type == "page" && slug.current == $slug][0]{
-  _id,
-  title,
-  "slug": slug.current,
-  sections[]{
-    _type,
-    _key,
-    _type == "sectionHero" => {
-      title,
-      subtitle,
-      image ${imageProjection},
-      ctaButtons[]{ label, to }
-    },
-    _type == "sectionRichText" => { heading, content },
-    _type == "sectionImage" => { image ${imageProjection}, caption },
-    _type == "sectionImageGallery" => { heading, images[] ${imageProjection} },
-    _type == "sectionProgramListing" => { heading, subheading, limit },
-    _type == "sectionFormEmbed" => { sectionTitle, jotformUrl },
-    _type == "sectionCta" => { title, subtitle, buttons[]{ label, to } }
-  }
-}`;
-
-export async function getPageBySlug(slug: string): Promise<TemplatePage | null> {
-  return sanityClient.fetch<TemplatePage | null>(PAGE_BY_SLUG_QUERY, { slug });
 }

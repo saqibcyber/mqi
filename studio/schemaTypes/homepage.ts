@@ -8,7 +8,6 @@ export const homepage = defineType({
     { name: 'hero', title: 'Hero' },
     { name: 'programs', title: 'Program Categories' },
     { name: 'whyChooseUs', title: 'Why Choose Us' },
-    { name: 'teachers', title: 'Our Teachers' },
     { name: 'cta', title: 'CTA Banner' },
   ],
   fields: [
@@ -79,19 +78,6 @@ export const homepage = defineType({
       title: 'Why Choose Us Items',
       group: 'whyChooseUs',
       of: [{ type: 'whyChooseUsItem' }],
-    }),
-    defineField({
-      name: 'teachersSectionTitle',
-      type: 'string',
-      title: 'Teachers Section Title',
-      group: 'teachers',
-      initialValue: 'Our Teachers',
-    }),
-    defineField({
-      name: 'teachersSectionSubtitle',
-      type: 'text',
-      title: 'Teachers Section Subtitle',
-      group: 'teachers',
     }),
     defineField({
       name: 'ctaTitle',

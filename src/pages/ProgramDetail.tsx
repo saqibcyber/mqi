@@ -125,36 +125,42 @@ const ProgramDetail = () => {
             </section>
           )}
 
-          {/* Registration form – inline, expand/collapse, no card wrapper */}
+          {/* Registration form – inline, expand/collapse */}
           {hasForm ? (
-            <section className="mt-12 pt-8 border-t border-border/50">
+            <section className="mt-12">
               <Collapsible open={formOpen} onOpenChange={setFormOpen}>
-                <CollapsibleTrigger asChild>
-                  <button className="w-full py-4 text-left flex items-center justify-between gap-4 rounded-lg hover:bg-muted/50 transition-colors -mx-2 px-2">
-                    <div>
-                      <h2 className="text-xl font-bold text-foreground">Ready to Enroll?</h2>
-                      <p className="text-sm text-muted-foreground mt-1">Complete the registration form to secure your spot.</p>
-                    </div>
-                    {formOpen ? <ChevronUp className="h-5 w-5 shrink-0" /> : <ChevronDown className="h-5 w-5 shrink-0" />}
-                  </button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="mt-6">
-                  <JotformEmbed
-                    formUrlOrId={jotformUrlOrId}
-                    minHeight={480}
-                    title={`Register: ${program.title}`}
-                    emptyMessage="No registration form is configured."
-                  />
-                </CollapsibleContent>
+                <Card className="border-primary/20 bg-primary/5">
+                  <CollapsibleTrigger asChild>
+                    <button className="w-full p-6 text-left flex items-center justify-between gap-4 rounded-lg hover:bg-primary/10 transition-colors">
+                      <div>
+                        <h2 className="text-xl font-bold text-foreground">Ready to Enroll?</h2>
+                        <p className="text-sm text-muted-foreground mt-1">Complete the registration form to secure your spot.</p>
+                      </div>
+                      {formOpen ? <ChevronUp className="h-5 w-5 shrink-0" /> : <ChevronDown className="h-5 w-5 shrink-0" />}
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <CardContent className="pt-0 pb-6">
+                      <JotformEmbed
+                        formUrlOrId={jotformUrlOrId}
+                        minHeight={480}
+                        title={`Register: ${program.title}`}
+                        emptyMessage="No registration form is configured."
+                      />
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
               </Collapsible>
             </section>
           ) : (
-            <section className="mt-12 pt-8 border-t border-border/50 text-center">
-              <p className="text-muted-foreground mb-4">No registration form is configured for this program.</p>
-              <Button asChild className="rounded-full font-semibold">
-                <Link to="/contact">Contact Us to Enroll</Link>
-              </Button>
-            </section>
+            <Card className="mt-12 border-primary/20 bg-primary/5">
+              <CardContent className="p-8 text-center">
+                <p className="text-muted-foreground mb-4">No registration form is configured for this program.</p>
+                <Button asChild className="rounded-full font-semibold">
+                  <Link to="/contact">Contact Us to Enroll</Link>
+                </Button>
+              </CardContent>
+            </Card>
           )}
         </motion.div>
       </div>

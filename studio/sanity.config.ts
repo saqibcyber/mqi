@@ -15,9 +15,6 @@ const DOCUMENT_TYPES = [
   'careerRole',
   'contactPage',
   'donatePage',
-  'teacher',
-  'teachersPage',
-  'page',
 ]
 
 export default defineConfig({
