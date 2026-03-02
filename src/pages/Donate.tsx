@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -16,6 +17,7 @@ const fadeUp = {
 };
 
 const Donate = () => {
+  const [activeForm, setActiveForm] = useState<"donate" | "sponsor">("donate");
   const { data: donatePageData } = useQuery({
     queryKey: ["donatePage"],
     queryFn: getDonatePage,
@@ -26,6 +28,8 @@ const Donate = () => {
   const trustBullets = (donatePageData?.trustBullets?.length ? donatePageData.trustBullets : defaultTrustBullets) as Array<{ title?: string; desc?: string }>;
   const donateFormTitle = donatePageData?.donateFormTitle ?? "Make a Donation";
   const sponsorFormTitle = donatePageData?.sponsorFormTitle ?? "Sponsor a Student";
+  const hasDonateForm = !!donatePageData?.jotformDonateUrl;
+  const hasSponsorForm = !!donatePageData?.jotformSponsorStudentUrl;
 
   return (
     <main className="py-16 md:py-24">
@@ -53,26 +57,60 @@ const Donate = () => {
           </div>
         )}
 
-        {/* General Donations – always visible */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-4">{donateFormTitle}</h2>
-          <JotformEmbed
-            formUrlOrId={donatePageData?.jotformDonateUrl}
-            minHeight={520}
-            title="General donations"
-            emptyMessage="Add a Jotform URL in Sanity (Donate Page → General Donations Jotform URL)."
-          />
-        </motion.section>
-
-        {/* Sponsor a Student – always visible */}
+        {/* Donation forms – toggle between one-time and sponsor */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <h2 className="text-2xl font-bold text-foreground mb-4">{sponsorFormTitle}</h2>
-          <JotformEmbed
-            formUrlOrId={donatePageData?.jotformSponsorStudentUrl}
-            minHeight={520}
-            title="Sponsor a student"
-            emptyMessage="Add a Jotform URL in Sanity (Donate Page → Sponsor a Student Jotform URL)."
-          />
+          {(hasDonateForm || hasSponsorForm) && (
+            <div className="inline-flex rounded-full bg-muted p-1 mb-8">
+              <button
+                type="button"
+                onClick={() => setActiveForm("donate")}
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                  activeForm === "donate"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                One-time Donation
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveForm("sponsor")}
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                  activeForm === "sponsor"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Sponsor a Student
+              </button>
+            </div>
+          )}
+
+          {activeForm === "donate" && (
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">{donateFormTitle}</h2>
+              <JotformEmbed
+                formUrlOrId={donatePageData?.jotformDonateUrl}
+                minHeight={900}
+                title="General donations"
+                emptyMessage="Add a Jotform URL in Sanity (Donate Page → General Donations Jotform URL)."
+                borderless
+              />
+            </div>
+          )}
+
+          {activeForm === "sponsor" && (
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">{sponsorFormTitle}</h2>
+              <JotformEmbed
+                formUrlOrId={donatePageData?.jotformSponsorStudentUrl}
+                minHeight={900}
+                title="Sponsor a student"
+                emptyMessage="Add a Jotform URL in Sanity (Donate Page → Sponsor a Student Jotform URL)."
+                borderless
+              />
+            </div>
+          )}
         </motion.section>
       </div>
     </main>

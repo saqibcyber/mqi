@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Users, DollarSign, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, Users, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { PortableText } from "@portabletext/react";
 import { useQuery } from "@tanstack/react-query";
 import { getProgramBySlug } from "@/lib/sanityQueries";
@@ -15,7 +13,6 @@ import { JotformEmbed } from "@/components/JotformEmbed";
 
 const ProgramDetail = () => {
   const { programSlug } = useParams();
-  const [formOpen, setFormOpen] = useState(false);
   const { data: program, isLoading } = useQuery({
     queryKey: ["program", programSlug],
     queryFn: () => getProgramBySlug(programSlug ?? ""),
@@ -125,32 +122,20 @@ const ProgramDetail = () => {
             </section>
           )}
 
-          {/* Registration form – inline, expand/collapse */}
+          {/* Registration form – inline in page layout */}
           {hasForm ? (
             <section className="mt-12">
-              <Collapsible open={formOpen} onOpenChange={setFormOpen}>
-                <Card className="border-primary/20 bg-primary/5">
-                  <CollapsibleTrigger asChild>
-                    <button className="w-full p-6 text-left flex items-center justify-between gap-4 rounded-lg hover:bg-primary/10 transition-colors">
-                      <div>
-                        <h2 className="text-xl font-bold text-foreground">Ready to Enroll?</h2>
-                        <p className="text-sm text-muted-foreground mt-1">Complete the registration form to secure your spot.</p>
-                      </div>
-                      {formOpen ? <ChevronUp className="h-5 w-5 shrink-0" /> : <ChevronDown className="h-5 w-5 shrink-0" />}
-                    </button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <CardContent className="pt-0 pb-6">
-                      <JotformEmbed
-                        formUrlOrId={jotformUrlOrId}
-                        minHeight={480}
-                        title={`Register: ${program.title}`}
-                        emptyMessage="No registration form is configured."
-                      />
-                    </CardContent>
-                  </CollapsibleContent>
-                </Card>
-              </Collapsible>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Ready to Enroll?</h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Complete the registration form below to secure your spot.
+              </p>
+              <JotformEmbed
+                formUrlOrId={jotformUrlOrId}
+                minHeight={720}
+                title={`Register: ${program.title}`}
+                emptyMessage="No registration form is configured."
+                borderless
+              />
             </section>
           ) : (
             <Card className="mt-12 border-primary/20 bg-primary/5">

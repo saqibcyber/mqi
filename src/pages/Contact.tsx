@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Clock, AlertCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { getContactPage } from "@/lib/sanityQueries";
-import { getJotformEmbedUrl } from "@/lib/jotform";
+import { JotformEmbed } from "@/components/JotformEmbed";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -34,7 +34,6 @@ const Contact = () => {
   const pageSubtitle = contactPageData?.subtitle ?? "We'd love to hear from you. Reach out with questions about our programs or to schedule a visit.";
   const formTitle = contactPageData?.formTitle ?? "Send us a Message";
   const jotformUrl = contactPageData?.jotformUrl;
-  const embedUrl = getJotformEmbedUrl(jotformUrl);
   const contactInfo = (contactPageData?.contactInfo?.length ? contactPageData.contactInfo : defaultContactInfo) as Array<{ type: string; title?: string; content?: string }>;
 
   return (
@@ -48,48 +47,47 @@ const Contact = () => {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
-          {/* Embedded Jotform */}
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <Card className="border-border/50">
-              <CardContent className="p-6 md:p-8">
-                <h2 className="text-xl font-semibold text-foreground mb-6">{formTitle}</h2>
-                {embedUrl ? (
-                  <div className="w-full min-h-[500px] rounded-lg overflow-hidden border border-border/50 bg-muted/30">
-                    <iframe
-                      title="Contact form"
-                      src={embedUrl}
-                      className="w-full h-full min-h-[500px] border-0"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
-                    <AlertCircle className="h-10 w-10 mb-3 opacity-60" />
-                    <p>No contact form is configured. Add a Jotform URL in Sanity (Contact Page).</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
+        {/* Full-width form at top */}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          className="max-w-3xl mx-auto mb-12"
+        >
+          <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-4">{formTitle}</h2>
+          <JotformEmbed
+            formUrlOrId={jotformUrl}
+            minHeight={720}
+            title="Contact form"
+            emptyMessage="No contact form is configured. Add a Jotform URL in Sanity (Contact Page)."
+            borderless
+          />
+        </motion.section>
 
-          {/* Contact Info */}
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.5, delay: 0.15 } } }} className="space-y-6">
-            {contactInfo.map((item) => {
-              const Icon = iconByType[item.type] ?? MapPin;
-              return (
-                <div key={item.type} className="flex items-start gap-4 p-5 rounded-xl bg-card border border-border/50">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <Icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground text-sm mb-1">{item.title ?? item.type}</h3>
-                    <p className="text-sm text-muted-foreground whitespace-pre-line">{item.content}</p>
-                  </div>
+        {/* Contact Info cards below */}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.5, delay: 0.15 } } }}
+          className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6"
+        >
+          {contactInfo.map((item) => {
+            const Icon = iconByType[item.type] ?? MapPin;
+            return (
+              <div key={item.type} className="flex items-start gap-4 p-5 rounded-xl bg-card border border-border/50">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <Icon className="h-5 w-5 text-primary" />
                 </div>
-              );
-            })}
-          </motion.div>
-        </div>
+                <div>
+                  <h3 className="font-semibold text-foreground text-sm mb-1">{item.title ?? item.type}</h3>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">{item.content}</p>
+                </div>
+              </div>
+            );
+          })}
+        </motion.section>
       </div>
     </main>
   );

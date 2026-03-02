@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, X, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useQuery } from "@tanstack/react-query";
 import { getCareerRoles, getCareersPage } from "@/lib/sanityQueries";
 import { getIcon } from "@/lib/icons";
@@ -17,7 +16,6 @@ const fadeUp = {
 
 const Careers = () => {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [applyFormOpen, setApplyFormOpen] = useState(false);
 
   const { data: careersPageData } = useQuery({
     queryKey: ["careersPage"],
@@ -92,30 +90,20 @@ const Careers = () => {
                   </>
                 )}
 
-                {/* Apply form – inline, expand/collapse */}
-                <Card className="border-primary/20 bg-primary/5">
-                  <Collapsible open={applyFormOpen} onOpenChange={setApplyFormOpen}>
-                    <CollapsibleTrigger asChild>
-                      <button className="w-full p-6 text-left flex items-center justify-between gap-4 rounded-lg hover:bg-primary/10 transition-colors">
-                        <div>
-                          <h3 className="text-xl font-semibold text-foreground">Apply for this Position</h3>
-                          <p className="text-sm text-muted-foreground mt-1">Submit your application via the form below.</p>
-                        </div>
-                        {applyFormOpen ? <ChevronUp className="h-5 w-5 shrink-0" /> : <ChevronDown className="h-5 w-5 shrink-0" />}
-                      </button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <CardContent className="pt-0 pb-6">
-                        <JotformEmbed
-                          formUrlOrId={role.jotformLink}
-                          minHeight={480}
-                          title={`Apply: ${role.title}`}
-                          emptyMessage="No application form is configured for this role."
-                        />
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </Card>
+                {/* Apply form – inline in page layout */}
+                <section className="mt-10">
+                  <h3 className="text-2xl font-semibold text-foreground mb-2">Apply for this Position</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Submit your application via the form below.
+                  </p>
+                  <JotformEmbed
+                    formUrlOrId={role.jotformLink}
+                    minHeight={720}
+                    title={`Apply: ${role.title}`}
+                    emptyMessage="No application form is configured for this role."
+                    borderless
+                  />
+                </section>
               </>
             )}
           </motion.div>

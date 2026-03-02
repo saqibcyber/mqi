@@ -27,6 +27,13 @@ export const homeProgramCategory = defineType({
       validation: (r) => r.required(),
     }),
     defineField({ name: 'to', type: 'string', title: 'Link (path)', initialValue: '/programs' }),
+    defineField({
+      name: 'programCategory',
+      type: 'reference',
+      title: 'Program Category',
+      to: [{ type: 'programCategory' }],
+      description: 'Link to a program category. When set, routes to filtered Programs view. Overrides Link path when both exist.',
+    }),
   ],
 });
 

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,9 @@ const fadeUp = {
 };
 
 const Programs = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeCategorySlug = searchParams.get("category") ?? null;
+
   const { data: programsPageData } = useQuery({
     queryKey: ["programsPage"],
     queryFn: getProgramsPage,
@@ -37,6 +40,10 @@ const Programs = () => {
     return acc;
   }, {});
 
+  const filteredCategories = activeCategorySlug
+    ? categories.filter((c) => c.slug === activeCategorySlug)
+    : categories;
+
   return (
     <main className="py-16 md:py-24">
       <div className="container">
@@ -48,8 +55,45 @@ const Programs = () => {
           </p>
         </motion.div>
 
+        {categories.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
+            <button
+              type="button"
+              onClick={() => setSearchParams({})}
+              className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                !activeCategorySlug
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              All
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat._id}
+                type="button"
+                onClick={() => setSearchParams({ category: cat.slug })}
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                  activeCategorySlug === cat.slug
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {cat.title}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="space-y-20">
-          {categories.map((cat, ci) => {
+          {filteredCategories.length === 0 ? (
+            <p className="text-center text-muted-foreground py-12">
+              {activeCategorySlug
+                ? "No programs found in this category."
+                : "No programs available."}
+            </p>
+          ) : (
+          filteredCategories.map((cat, ci) => {
             const Icon = getIcon(cat.icon);
             const categoryPrograms = programsByCategoryId[cat._id] ?? [];
             if (categoryPrograms.length === 0) return null;
@@ -102,7 +146,8 @@ const Programs = () => {
                 </div>
               </motion.section>
             );
-          })}
+          })
+          )}
         </div>
       </div>
     </main>

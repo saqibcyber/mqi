@@ -8,6 +8,7 @@ import { getSiteSettings } from "@/lib/sanityQueries";
 
 const defaultNavLinks = [
   { label: "Home", to: "/" },
+  { label: "About", to: "/about" },
   { label: "Programs", to: "/programs" },
   { label: "Career & Volunteer", to: "/careers" },
   { label: "Blog", to: "/blog" },

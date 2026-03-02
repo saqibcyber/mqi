@@ -9,6 +9,7 @@ import { blogPage } from './blogPage'
 import { careerRole, careersPage } from './careerRole'
 import { contactInfoItem, contactPage } from './contactPage'
 import { donateTrustBullet, donatePage } from './donatePage'
+import { aboutTeacher, aboutGraduate, aboutPage } from './aboutPage'
 
 export const schemaTypes = [
   navLink,
@@ -28,4 +29,7 @@ export const schemaTypes = [
   contactPage,
   donateTrustBullet,
   donatePage,
+  aboutTeacher,
+  aboutGraduate,
+  aboutPage,
 ]

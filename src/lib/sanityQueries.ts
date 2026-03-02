@@ -25,6 +25,7 @@ export interface HomeProgramCategory {
   description: string;
   icon: string;
   to?: string;
+  categorySlug?: string;
 }
 
 export interface WhyChooseUsItem {
@@ -192,6 +193,29 @@ export interface DonatePage {
   sponsorFormTitle?: string;
 }
 
+export interface AboutTeacher {
+  name: string;
+  role?: string;
+  oneLineDescription?: string;
+  photo?: { asset?: { url: string } };
+}
+
+export interface AboutGraduate {
+  name: string;
+  title?: string;
+  yearOfGraduation?: string;
+  photo?: { asset?: { url: string } };
+}
+
+export interface AboutPage {
+  title?: string;
+  subtitle?: string;
+  instituteText?: string;
+  heroImage?: { asset?: { url: string } };
+  teachers?: AboutTeacher[];
+  graduates?: AboutGraduate[];
+}
+
 // --- GROQ Queries ---
 const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   navLinks[]{ label, to },
@@ -211,7 +235,7 @@ const HOMEPAGE_QUERY = `*[_type == "homepage"][0]{
   heroCtaButtons[]{ label, to, variant },
   programsSectionTitle,
   programsSectionSubtitle,
-  programCategories[]{ title, description, icon, to },
+  programCategories[]{ title, description, icon, to, "categorySlug": programCategory->slug.current },
   whyChooseUsSectionTitle,
   whyChooseUsSectionSubtitle,
   whyChooseUsItems[]{ icon, title, description },
@@ -341,6 +365,25 @@ const DONATE_PAGE_QUERY = `*[_type == "donatePage"][0]{
   sponsorFormTitle
 }`;
 
+const ABOUT_PAGE_QUERY = `*[_type == "aboutPage"][0]{
+  title,
+  subtitle,
+  instituteText,
+  heroImage ${imageProjection},
+  teachers[]{
+    name,
+    role,
+    oneLineDescription,
+    photo ${imageProjection}
+  },
+  graduates[]{
+    name,
+    title,
+    yearOfGraduation,
+    photo ${imageProjection}
+  }
+}`;
+
 // --- Fetch functions ---
 export async function getSiteSettings(): Promise<SiteSettings | null> {
   return sanityClient.fetch<SiteSettings | null>(SITE_SETTINGS_QUERY);
@@ -392,4 +435,8 @@ export async function getContactPage(): Promise<ContactPage | null> {
 
 export async function getDonatePage(): Promise<DonatePage | null> {
   return sanityClient.fetch<DonatePage | null>(DONATE_PAGE_QUERY);
+}
+
+export async function getAboutPage(): Promise<AboutPage | null> {
+  return sanityClient.fetch<AboutPage | null>(ABOUT_PAGE_QUERY);
 }

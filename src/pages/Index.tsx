@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import heroImage from "@/assets/hero-classroom.jpg";
 import { useQuery } from "@tanstack/react-query";
-import { getHomepage } from "@/lib/sanityQueries";
+import { getHomepage, getAboutPage, type AboutTeacher } from "@/lib/sanityQueries";
 import { getIcon } from "@/lib/icons";
+import { urlFor } from "@/lib/sanity";
 
 const defaultProgramCategories = [
   { title: "Courses", description: "Flexible courses in Qur'an recitation, Tajweed, Arabic, and Islamic Studies for all ages and levels.", icon: "BookOpen", to: "/programs" },
@@ -32,6 +33,10 @@ const Index = () => {
     queryKey: ["homepage"],
     queryFn: getHomepage,
   });
+  const { data: aboutPage } = useQuery({
+    queryKey: ["aboutPageForHome"],
+    queryFn: getAboutPage,
+  });
 
   const heroEyebrow = homepage?.heroEyebrow ?? "— Milton Quran Institute —";
   const heroTitle = homepage?.heroTitle ?? "Nurturing Hearts Through Qur'anic Education";
@@ -52,6 +57,12 @@ const Index = () => {
     { label: "View Programs", to: "/programs", variant: "primary" as const },
     { label: "Support Us", to: "/donate", variant: "accent" as const },
   ];
+
+  const aboutSectionTitle = aboutPage?.title ?? "About Us";
+  const aboutSectionSubtitle = aboutPage?.subtitle ?? "";
+  const aboutTextFull = aboutPage?.instituteText ?? "";
+  const homeTeachers = (aboutPage?.teachers ?? []) as AboutTeacher[];
+  const showAboutSection = !!aboutPage;
 
   return (
     <main>
@@ -110,7 +121,7 @@ const Index = () => {
               const Icon = getIcon(cat.icon);
               return (
                 <motion.div key={cat.title} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.6, delay: i * 0.15 } } }}>
-                  <Link to={cat.to ?? "/programs"}>
+                  <Link to={cat.categorySlug ? `/programs?category=${cat.categorySlug}` : (cat.to ?? "/programs")}>
                     <Card className="group h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50">
                       <CardContent className="p-8 text-center space-y-4">
                         <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -127,6 +138,77 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* About Us */}
+      {showAboutSection && (
+        <section className="py-16 md:py-24">
+          <div className="container">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground">{aboutSectionTitle}</h2>
+              <div className="geometric-divider w-24 mx-auto mt-4 mb-4" />
+              {aboutSectionSubtitle && (
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  {aboutSectionSubtitle}
+                </p>
+              )}
+            </motion.div>
+
+            {aboutTextFull && (
+              <p className="text-muted-foreground text-base md:text-lg leading-relaxed whitespace-pre-line max-w-3xl mx-auto mb-10">
+                {aboutTextFull}
+              </p>
+            )}
+
+            {homeTeachers.length > 0 && (
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-4">Our Teachers</h3>
+                <div className="flex gap-6 overflow-x-auto pb-2 -mx-2 px-2 md:mx-0 md:px-0 scrollbar-thin">
+                  {homeTeachers.map((t) => {
+                    const photoUrl = t.photo?.asset?.url
+                      ? urlFor(t.photo).width(280).height(280).fit("crop").url()
+                      : null;
+                    return (
+                      <Card
+                        key={t.name}
+                        className="min-w-[260px] max-w-[280px] flex-shrink-0 border-border/60 bg-card/80 backdrop-blur-sm"
+                      >
+                        <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+                          {photoUrl && (
+                            <div className="w-20 h-20 rounded-full overflow-hidden border border-border/60">
+                              <img src={photoUrl} alt={t.name} className="w-full h-full object-cover" />
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-semibold text-foreground">{t.name}</p>
+                            {t.role && <p className="text-xs text-primary mt-0.5">{t.role}</p>}
+                            {t.oneLineDescription && (
+                              <p className="text-sm text-muted-foreground mt-1">{t.oneLineDescription}</p>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div className="mt-8">
+              <Link to="/about">
+                <Button variant="outline" className="rounded-full font-semibold px-6">
+                  Learn more about us
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Why Choose Us */}
       <section className="py-16 md:py-24 geometric-border">
