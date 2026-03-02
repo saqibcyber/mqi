@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { PortableText } from "@portabletext/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -32,6 +33,7 @@ const Programs = () => {
 
   const pageTitle = programsPageData?.title ?? "Our Programs";
   const pageSubtitle = programsPageData?.subtitle ?? "Explore our comprehensive range of Qur'anic education programs designed for learners at every stage.";
+  const introContent = programsPageData?.introContent;
 
   const programsByCategoryId = (programs as ProgramForListing[]).reduce<Record<string, ProgramForListing[]>>((acc, prog) => {
     const id = prog.category?._id ?? "_none";
@@ -53,6 +55,11 @@ const Programs = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             {pageSubtitle}
           </p>
+          {introContent && introContent.length > 0 && (
+            <div className="prose prose-lg max-w-2xl mx-auto mt-6 text-center prose-p:text-muted-foreground">
+              <PortableText value={introContent} />
+            </div>
+          )}
         </motion.div>
 
         {categories.length > 0 && (

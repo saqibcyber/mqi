@@ -33,6 +33,7 @@ const Contact = () => {
   const pageTitle = contactPageData?.title ?? "Contact Us";
   const pageSubtitle = contactPageData?.subtitle ?? "We'd love to hear from you. Reach out with questions about our programs or to schedule a visit.";
   const formTitle = contactPageData?.formTitle ?? "Send us a Message";
+  const introText = contactPageData?.introText;
   const jotformUrl = contactPageData?.jotformUrl;
   const contactInfo = (contactPageData?.contactInfo?.length ? contactPageData.contactInfo : defaultContactInfo) as Array<{ type: string; title?: string; content?: string }>;
 
@@ -45,6 +46,11 @@ const Contact = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             {pageSubtitle}
           </p>
+          {introText && (
+            <p className="text-muted-foreground max-w-2xl mx-auto text-sm mt-4">
+              {introText}
+            </p>
+          )}
         </motion.div>
 
         {/* Full-width form at top */}

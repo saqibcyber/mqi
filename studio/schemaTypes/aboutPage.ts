@@ -109,6 +109,13 @@ export const aboutPage = defineType({
       title: 'Graduates',
       of: [{ type: 'aboutGraduate' }],
     }),
+    defineField({
+      name: 'additionalContent',
+      type: 'array',
+      title: 'Additional Content',
+      of: [{ type: 'block' }],
+      description: 'Optional rich text section at the bottom of the page.',
+    }),
   ],
 });
 

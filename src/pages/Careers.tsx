@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PortableText } from "@portabletext/react";
 import { useQuery } from "@tanstack/react-query";
 import { getCareerRoles, getCareersPage } from "@/lib/sanityQueries";
 import { getIcon } from "@/lib/icons";
@@ -29,6 +30,8 @@ const Careers = () => {
   const role = selectedRole ? roles.find((r) => r._id === selectedRole) : null;
   const pageTitle = careersPageData?.title ?? "Career & Volunteer Opportunities";
   const pageSubtitle = careersPageData?.subtitle ?? "Join our team and make a meaningful impact in the community through Qur'anic education.";
+  const applyFormTitle = careersPageData?.applyFormTitle ?? "Apply for this Position";
+  const introContent = careersPageData?.introContent;
   const hasForm = role ? !!getJotformUrl(role.jotformLink) : false;
 
   return (
@@ -40,6 +43,11 @@ const Careers = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             {pageSubtitle}
           </p>
+          {introContent && introContent.length > 0 && (
+            <div className="prose prose-lg max-w-2xl mx-auto mt-6 text-center prose-p:text-muted-foreground">
+              <PortableText value={introContent} />
+            </div>
+          )}
         </motion.div>
 
         {!selectedRole ? (
@@ -92,7 +100,7 @@ const Careers = () => {
 
                 {/* Apply form – inline in page layout */}
                 <section className="mt-10">
-                  <h3 className="text-2xl font-semibold text-foreground mb-2">Apply for this Position</h3>
+                  <h3 className="text-2xl font-semibold text-foreground mb-2">{applyFormTitle}</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     Submit your application via the form below.
                   </p>

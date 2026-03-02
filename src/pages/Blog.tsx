@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
+import { PortableText } from "@portabletext/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { getBlogPosts, getBlogPage } from "@/lib/sanityQueries";
@@ -24,6 +25,7 @@ const Blog = () => {
 
   const pageTitle = blogPageData?.title ?? "Blog";
   const pageSubtitle = blogPageData?.subtitle ?? "Insights, reflections, and updates from Milton Qur'an Institute.";
+  const introContent = blogPageData?.introContent;
 
   return (
     <main className="py-16 md:py-24">
@@ -34,6 +36,11 @@ const Blog = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             {pageSubtitle}
           </p>
+          {introContent && introContent.length > 0 && (
+            <div className="prose prose-lg max-w-2xl mx-auto mt-6 text-center prose-p:text-muted-foreground">
+              <PortableText value={introContent} />
+            </div>
+          )}
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">

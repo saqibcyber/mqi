@@ -10,6 +10,14 @@ import { careerRole, careersPage } from './careerRole'
 import { contactInfoItem, contactPage } from './contactPage'
 import { donateTrustBullet, donatePage } from './donatePage'
 import { aboutTeacher, aboutGraduate, aboutPage } from './aboutPage'
+import {
+  contentBlockRichText,
+  contentBlockImage,
+  contentBlockCta,
+  contentPage,
+  landingPage,
+  infoPage,
+} from './templates'
 
 export const schemaTypes = [
   navLink,
@@ -32,4 +40,10 @@ export const schemaTypes = [
   aboutTeacher,
   aboutGraduate,
   aboutPage,
+  contentBlockRichText,
+  contentBlockImage,
+  contentBlockCta,
+  contentPage,
+  landingPage,
+  infoPage,
 ]

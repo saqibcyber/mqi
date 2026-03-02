@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
+import { PortableText } from "@portabletext/react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { getAboutPage, type AboutTeacher, type AboutGraduate } from "@/lib/sanityQueries";
@@ -175,6 +176,14 @@ const About = () => {
                   </Card>
                 );
               })}
+            </div>
+          </section>
+        )}
+
+        {aboutPage?.additionalContent && aboutPage.additionalContent.length > 0 && (
+          <section className="mt-14">
+            <div className="prose prose-lg max-w-none prose-p:text-muted-foreground">
+              <PortableText value={aboutPage.additionalContent as React.ComponentProps<typeof PortableText>['value']} />
             </div>
           </section>
         )}

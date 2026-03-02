@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
+import { PortableText } from "@portabletext/react";
 import { useQuery } from "@tanstack/react-query";
 import { getDonatePage } from "@/lib/sanityQueries";
 import { JotformEmbed } from "@/components/JotformEmbed";
@@ -109,6 +110,12 @@ const Donate = () => {
                 emptyMessage="Add a Jotform URL in Sanity (Donate Page → Sponsor a Student Jotform URL)."
                 borderless
               />
+            </div>
+          )}
+
+          {donatePageData?.additionalContent && donatePageData.additionalContent.length > 0 && (
+            <div className="mt-12 prose prose-lg max-w-none prose-p:text-muted-foreground">
+              <PortableText value={donatePageData.additionalContent} />
             </div>
           )}
         </motion.section>

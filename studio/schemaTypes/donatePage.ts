@@ -47,5 +47,12 @@ export const donatePage = defineType({
       title: 'Sponsor a Student Section Title',
       initialValue: 'Sponsor a Student',
     }),
+    defineField({
+      name: 'additionalContent',
+      type: 'array',
+      title: 'Additional Content',
+      of: [{ type: 'block' }],
+      description: 'Optional rich text (e.g. impact story, thank-you message) below the forms.',
+    }),
   ],
 });

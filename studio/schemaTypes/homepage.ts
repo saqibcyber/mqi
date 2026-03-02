@@ -98,5 +98,13 @@ export const homepage = defineType({
       group: 'cta',
       of: [{ type: 'ctaButton' }],
     }),
+    defineField({
+      name: 'footerNote',
+      type: 'text',
+      title: 'Footer Note',
+      group: 'cta',
+      rows: 2,
+      description: 'Optional short note above or near the CTA (e.g. seasonal message).',
+    }),
   ],
 });

@@ -54,6 +54,7 @@ export interface Homepage {
   ctaTitle?: string;
   ctaSubtitle?: string;
   ctaButtons?: CtaButton[];
+  footerNote?: string;
 }
 
 export interface ProgramCategoryRef {
@@ -102,6 +103,7 @@ export interface ProgramForListing extends Program {
 export interface ProgramsPage {
   title?: string;
   subtitle?: string;
+  introContent?: unknown[];
 }
 
 export interface BlogPostListItem {
@@ -122,6 +124,7 @@ export interface BlogPostFull extends BlogPostListItem {
 export interface BlogPage {
   title?: string;
   subtitle?: string;
+  introContent?: unknown[];
 }
 
 export interface CareerRole {
@@ -139,17 +142,7 @@ export interface CareersPage {
   title?: string;
   subtitle?: string;
   applyFormTitle?: string;
-  formFields?: {
-    nameLabel?: string;
-    namePlaceholder?: string;
-    emailLabel?: string;
-    emailPlaceholder?: string;
-    phoneLabel?: string;
-    phonePlaceholder?: string;
-    messageLabel?: string;
-    messagePlaceholder?: string;
-    submitLabel?: string;
-  };
+  introContent?: unknown[];
 }
 
 export interface ContactInfoItem {
@@ -163,17 +156,7 @@ export interface ContactPage {
   subtitle?: string;
   jotformUrl?: string;
   formTitle?: string;
-  formFields?: {
-    nameLabel?: string;
-    namePlaceholder?: string;
-    emailLabel?: string;
-    emailPlaceholder?: string;
-    subjectLabel?: string;
-    subjectPlaceholder?: string;
-    messageLabel?: string;
-    messagePlaceholder?: string;
-    submitLabel?: string;
-  };
+  introText?: string;
   contactInfo?: ContactInfoItem[];
   mapEmbedUrl?: string;
 }
@@ -191,6 +174,7 @@ export interface DonatePage {
   donateFormTitle?: string;
   jotformSponsorStudentUrl?: string;
   sponsorFormTitle?: string;
+  additionalContent?: unknown[];
 }
 
 export interface AboutTeacher {
@@ -214,7 +198,67 @@ export interface AboutPage {
   heroImage?: { asset?: { url: string } };
   teachers?: AboutTeacher[];
   graduates?: AboutGraduate[];
+  additionalContent?: unknown[];
 }
+
+export interface ContentBlockRichText {
+  _type: 'contentBlockRichText';
+  _key?: string;
+  heading?: string;
+  body?: unknown[];
+}
+
+export interface ContentBlockImage {
+  _type: 'contentBlockImage';
+  _key?: string;
+  image?: { asset?: { url: string } };
+  caption?: string;
+}
+
+export interface ContentBlockCta {
+  _type: 'contentBlockCta';
+  _key?: string;
+  title?: string;
+  subtitle?: string;
+  buttons?: CtaButton[];
+}
+
+export type TemplateSection = ContentBlockRichText | ContentBlockImage | ContentBlockCta;
+
+export interface ContentPageDoc {
+  _type: 'contentPage';
+  _id: string;
+  slug: string;
+  title: string;
+  subtitle?: string;
+  heroImage?: { asset?: { url: string } };
+  mainContent?: unknown[];
+  sections?: TemplateSection[];
+}
+
+export interface LandingPageDoc {
+  _type: 'landingPage';
+  _id: string;
+  slug: string;
+  title: string;
+  subtitle?: string;
+  heroImage?: { asset?: { url: string } };
+  heroCtaButtons?: CtaButton[];
+  body?: unknown[];
+  sections?: TemplateSection[];
+}
+
+export interface InfoPageDoc {
+  _type: 'infoPage';
+  _id: string;
+  slug: string;
+  title: string;
+  subtitle?: string;
+  introText?: string;
+  sections?: TemplateSection[];
+}
+
+export type TemplatePageDoc = ContentPageDoc | LandingPageDoc | InfoPageDoc;
 
 // --- GROQ Queries ---
 const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
@@ -241,10 +285,11 @@ const HOMEPAGE_QUERY = `*[_type == "homepage"][0]{
   whyChooseUsItems[]{ icon, title, description },
   ctaTitle,
   ctaSubtitle,
-  ctaButtons[]{ label, to, variant }
+  ctaButtons[]{ label, to, variant },
+  footerNote
 }`;
 
-const PROGRAMS_PAGE_QUERY = `*[_type == "programsPage"][0]{ title, subtitle }`;
+const PROGRAMS_PAGE_QUERY = `*[_type == "programsPage"][0]{ title, subtitle, introContent }`;
 
 const PROGRAM_CATEGORIES_QUERY = `*[_type == "programCategory"] | order(title asc){
   _id,
@@ -284,7 +329,7 @@ const PROGRAM_BY_SLUG_QUERY = `*[_type == "program" && slug.current == $slug][0]
   faqs[]{ q, a }
 }`;
 
-const BLOG_PAGE_QUERY = `*[_type == "blogPage"][0]{ title, subtitle }`;
+const BLOG_PAGE_QUERY = `*[_type == "blogPage"][0]{ title, subtitle, introContent }`;
 
 const BLOG_POSTS_QUERY = `*[_type == "blogPost"] | order(publishedAt desc){
   _id,
@@ -311,17 +356,7 @@ const CAREERS_PAGE_QUERY = `*[_type == "careersPage"][0]{
   title,
   subtitle,
   applyFormTitle,
-  formFields{
-    nameLabel,
-    namePlaceholder,
-    emailLabel,
-    emailPlaceholder,
-    phoneLabel,
-    phonePlaceholder,
-    messageLabel,
-    messagePlaceholder,
-    submitLabel
-  }
+  introContent
 }`;
 
 const CAREER_ROLES_QUERY = `*[_type == "careerRole"] | order(title asc){
@@ -340,17 +375,7 @@ const CONTACT_PAGE_QUERY = `*[_type == "contactPage"][0]{
   subtitle,
   jotformUrl,
   formTitle,
-  formFields{
-    nameLabel,
-    namePlaceholder,
-    emailLabel,
-    emailPlaceholder,
-    subjectLabel,
-    subjectPlaceholder,
-    messageLabel,
-    messagePlaceholder,
-    submitLabel
-  },
+  introText,
   contactInfo[]{ type, title, content },
   mapEmbedUrl
 }`;
@@ -362,7 +387,8 @@ const DONATE_PAGE_QUERY = `*[_type == "donatePage"][0]{
   jotformDonateUrl,
   donateFormTitle,
   jotformSponsorStudentUrl,
-  sponsorFormTitle
+  sponsorFormTitle,
+  additionalContent
 }`;
 
 const ABOUT_PAGE_QUERY = `*[_type == "aboutPage"][0]{
@@ -381,6 +407,31 @@ const ABOUT_PAGE_QUERY = `*[_type == "aboutPage"][0]{
     title,
     yearOfGraduation,
     photo ${imageProjection}
+  },
+  additionalContent
+}`;
+
+const TEMPLATE_PAGE_QUERY = `*[_type in ["contentPage", "landingPage", "infoPage"] && slug.current == $slug][0]{
+  _type,
+  _id,
+  "slug": slug.current,
+  title,
+  subtitle,
+  heroImage ${imageProjection},
+  heroCtaButtons[]{ label, to, variant },
+  mainContent,
+  body,
+  introText,
+  sections[]{
+    _type,
+    _key,
+    heading,
+    body,
+    image ${imageProjection},
+    caption,
+    title,
+    subtitle,
+    buttons[]{ label, to, variant }
   }
 }`;
 
@@ -439,4 +490,8 @@ export async function getDonatePage(): Promise<DonatePage | null> {
 
 export async function getAboutPage(): Promise<AboutPage | null> {
   return sanityClient.fetch<AboutPage | null>(ABOUT_PAGE_QUERY);
+}
+
+export async function getTemplatePageBySlug(slug: string): Promise<TemplatePageDoc | null> {
+  return sanityClient.fetch<TemplatePageDoc | null>(TEMPLATE_PAGE_QUERY, { slug });
 }

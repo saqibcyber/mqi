@@ -53,6 +53,7 @@ const Index = () => {
   const whyChooseUsItems = homepage?.whyChooseUsItems?.length ? homepage.whyChooseUsItems : defaultWhyChooseUs;
   const ctaTitle = homepage?.ctaTitle ?? "Begin Your Qur'anic Journey Today";
   const ctaSubtitle = homepage?.ctaSubtitle ?? "Enroll in one of our programs and join a community dedicated to learning, growth, and spiritual development.";
+  const footerNote = homepage?.footerNote;
   const ctaButtons = homepage?.ctaButtons?.length ? homepage.ctaButtons : [
     { label: "View Programs", to: "/programs", variant: "primary" as const },
     { label: "Support Us", to: "/donate", variant: "accent" as const },
@@ -242,6 +243,9 @@ const Index = () => {
       {/* CTA Banner */}
       <section className="py-16 md:py-20 bg-secondary">
         <div className="container text-center space-y-6">
+          {footerNote && (
+            <p className="text-secondary-foreground/90 text-sm max-w-xl mx-auto">{footerNote}</p>
+          )}
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-foreground">{ctaTitle}</h2>
           <p className="text-secondary-foreground/80 max-w-xl mx-auto text-lg">{ctaSubtitle}</p>
           <div className="flex flex-wrap justify-center gap-4 pt-2">
