@@ -121,7 +121,7 @@ const Index = () => {
             {programCategories.map((cat, i) => {
               const Icon = getIcon(cat.icon);
               return (
-                <motion.div key={cat.title} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.6, delay: i * 0.15 } } }}>
+                <div key={cat.title}>
                   <Link to={cat.categorySlug ? `/programs?category=${cat.categorySlug}` : (cat.to ?? "/programs")}>
                     <Card className="group h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50">
                       <CardContent className="p-8 text-center space-y-4">
@@ -133,7 +133,7 @@ const Index = () => {
                       </CardContent>
                     </Card>
                   </Link>
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -161,7 +161,7 @@ const Index = () => {
             </motion.div>
 
             {aboutTextFull && (
-              <p className="text-muted-foreground text-base md:text-lg leading-relaxed whitespace-pre-line max-w-3xl mx-auto mb-10">
+              <p className="text-muted-foreground text-base md:text-lg leading-relaxed whitespace-pre-line mb-10">
                 {aboutTextFull}
               </p>
             )}
@@ -182,7 +182,12 @@ const Index = () => {
                         <CardContent className="p-6 flex flex-col items-center text-center gap-3">
                           {photoUrl && (
                             <div className="w-20 h-20 rounded-full overflow-hidden border border-border/60">
-                              <img src={photoUrl} alt={t.name} className="w-full h-full object-cover" />
+                              <img
+                                src={photoUrl}
+                                alt={t.name}
+                                loading="lazy"
+                                className="w-full h-full object-cover"
+                              />
                             </div>
                           )}
                           <div>
@@ -223,7 +228,7 @@ const Index = () => {
             {whyChooseUsItems.map((item, i) => {
               const Icon = getIcon(item.icon);
               return (
-                <motion.div key={item.title} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.5, delay: i * 0.1 } } }}>
+                <div key={item.title}>
                   <div className="flex items-start gap-4 p-6 rounded-xl bg-card/80 backdrop-blur-sm">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                       <Icon className="h-6 w-6 text-primary" />
@@ -233,7 +238,7 @@ const Index = () => {
                       <p className="text-sm text-muted-foreground">{item.description}</p>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>

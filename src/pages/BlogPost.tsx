@@ -64,7 +64,12 @@ const BlogPost = () => {
 
           {imageUrl && (
             <div className="rounded-2xl overflow-hidden mb-10">
-              <img src={imageUrl} alt={post.title} className="w-full h-auto" />
+              <img
+                src={imageUrl}
+                alt={post.title}
+                loading="lazy"
+                className="w-full h-auto"
+              />
             </div>
           )}
 

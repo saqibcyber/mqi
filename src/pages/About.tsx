@@ -54,7 +54,12 @@ const About = () => {
 
         {heroImageUrl && (
           <div className="rounded-2xl overflow-hidden shadow-sm border border-border/50 mb-12 md:mb-16 aspect-[2/1] max-h-[400px]">
-            <img src={heroImageUrl} alt="Milton Quran Institute" className="w-full h-full object-cover" />
+            <img
+              src={heroImageUrl}
+              alt="Milton Quran Institute"
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
           </div>
         )}
 
@@ -103,7 +108,12 @@ const About = () => {
                     <CardContent className="p-6 flex flex-col items-center text-center gap-4">
                       {photoUrl && (
                         <div className="w-28 h-28 rounded-full overflow-hidden border border-border/60">
-                          <img src={photoUrl} alt={t.name} className="w-full h-full object-cover" />
+                          <img
+                            src={photoUrl}
+                            alt={t.name}
+                            loading="lazy"
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                       )}
                       <div>
@@ -160,7 +170,12 @@ const About = () => {
                     <CardContent className="p-6 flex flex-col items-center text-center gap-4">
                       {photoUrl && (
                         <div className="w-24 h-24 rounded-full overflow-hidden border border-border/60">
-                          <img src={photoUrl} alt={g.name} className="w-full h-full object-cover" />
+                          <img
+                            src={photoUrl}
+                            alt={g.name}
+                            loading="lazy"
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                       )}
                       <div>

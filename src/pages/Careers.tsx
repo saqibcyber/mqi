@@ -55,11 +55,20 @@ const Careers = () => {
             {roles.map((r, i) => {
               const Icon = getIcon(r.icon);
               return (
-                <motion.div key={r._id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.5, delay: i * 0.1 } } }}>
-                  <Card className="h-full hover:shadow-lg transition-all duration-300 cursor-pointer border-border/50 hover:-translate-y-1" onClick={() => setSelectedRole(r._id)}>
+                <div key={r._id}>
+                  <Card
+                    className="h-full hover:shadow-lg transition-all duration-300 cursor-pointer border-border/50 hover:-translate-y-1"
+                    onClick={() => setSelectedRole(r._id)}
+                  >
                     <CardContent className="p-6 space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className={`text-xs px-3 py-1 rounded-full font-medium ${r.type === "Volunteer" ? "bg-accent/20 text-accent-foreground" : "bg-primary/10 text-primary"}`}>{r.type}</span>
+                        <span
+                          className={`text-xs px-3 py-1 rounded-full font-medium ${
+                            r.type === "Volunteer" ? "bg-accent/20 text-accent-foreground" : "bg-primary/10 text-primary"
+                          }`}
+                        >
+                          {r.type}
+                        </span>
                         {r.location && <span className="text-xs text-muted-foreground">{r.location}</span>}
                       </div>
                       <h3 className="text-lg font-semibold text-foreground">{r.title}</h3>
@@ -69,7 +78,7 @@ const Careers = () => {
                       </Button>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </div>
               );
             })}
           </div>

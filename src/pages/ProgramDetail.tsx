@@ -63,7 +63,12 @@ const ProgramDetail = () => {
 
           {imageUrl && (
             <div className="rounded-2xl overflow-hidden mb-8 aspect-[2/1]">
-              <img src={imageUrl} alt={program.title} className="w-full h-full object-cover" />
+              <img
+                src={imageUrl}
+                alt={program.title}
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
             </div>
           )}
 

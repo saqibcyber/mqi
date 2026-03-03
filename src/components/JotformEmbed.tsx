@@ -55,21 +55,8 @@ export function JotformEmbed({
     return () => clearTimeout(t);
   }, [minHeight, shouldLoad]);
 
-  if (!embedUrl) {
-    const containerClasses = borderless
-      ? `flex flex-col items-center justify-center py-12 text-center text-muted-foreground ${className}`
-      : `flex flex-col items-center justify-center py-12 text-center text-muted-foreground rounded-2xl border border-border/50 bg-muted/30 ${className}`;
-
-    return (
-      <div className={containerClasses}>
-        <AlertCircle className="h-10 w-10 mb-3 opacity-60" />
-        <p>{emptyMessage}</p>
-      </div>
-    );
-  }
-
   useEffect(() => {
-    if (!lazy || shouldLoad) return;
+    if (!lazy || shouldLoad || !embedUrl) return;
     if (typeof IntersectionObserver === "undefined") {
       setShouldLoad(true);
       return;
@@ -91,7 +78,22 @@ export function JotformEmbed({
     }
 
     return () => observer.disconnect();
-  }, [lazy, shouldLoad]);
+  }, [embedUrl, lazy, shouldLoad]);
+
+  const hasEmbedUrl = !!embedUrl;
+
+  if (!hasEmbedUrl) {
+    const emptyContainerClasses = borderless
+      ? `flex flex-col items-center justify-center py-12 text-center text-muted-foreground ${className}`
+      : `flex flex-col items-center justify-center py-12 text-center text-muted-foreground rounded-2xl border border-border/50 bg-muted/30 ${className}`;
+
+    return (
+      <div className={emptyContainerClasses}>
+        <AlertCircle className="h-10 w-10 mb-3 opacity-60" />
+        <p>{emptyMessage}</p>
+      </div>
+    );
+  }
 
   const containerClasses = borderless
     ? `rounded-2xl overflow-hidden w-full ${className}`.trim()

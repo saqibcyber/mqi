@@ -92,7 +92,7 @@ const Programs = () => {
           </div>
         )}
 
-        <div className="space-y-20">
+          <div className="space-y-20">
           {filteredCategories.length === 0 ? (
             <p className="text-center text-muted-foreground py-12">
               {activeCategorySlug
@@ -105,7 +105,7 @@ const Programs = () => {
             const categoryPrograms = programsByCategoryId[cat._id] ?? [];
             if (categoryPrograms.length === 0) return null;
             return (
-              <motion.section key={cat._id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+              <section key={cat._id}>
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                     <Icon className="h-6 w-6 text-primary" />
@@ -126,7 +126,12 @@ const Programs = () => {
                         <Card className="h-full overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50">
                           {imageUrl && (
                             <div className="aspect-[16/9] overflow-hidden">
-                              <img src={imageUrl} alt={prog.title} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                              <img
+                                src={imageUrl}
+                                alt={prog.title}
+                                loading="lazy"
+                                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                              />
                             </div>
                           )}
                           <CardContent className="p-6 space-y-3">
@@ -151,7 +156,7 @@ const Programs = () => {
                     );
                   })}
                 </div>
-              </motion.section>
+              </section>
             );
           })
           )}

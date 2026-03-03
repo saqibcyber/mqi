@@ -52,12 +52,17 @@ const Blog = () => {
               ? format(new Date(post.publishedAt), "MMMM d, yyyy")
               : "";
             return (
-              <motion.div key={post._id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.5, delay: i * 0.08 } } }}>
+              <div key={post._id}>
                 <Link to={`/blog/${post.slug}`}>
                   <Card className="h-full overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50">
                     <div className="aspect-[3/2] overflow-hidden">
                       {imageUrl ? (
-                        <img src={imageUrl} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                        <img
+                          src={imageUrl}
+                          alt={post.title}
+                          loading="lazy"
+                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                        />
                       ) : (
                         <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground text-sm">No image</div>
                       )}
@@ -73,7 +78,7 @@ const Blog = () => {
                     </CardContent>
                   </Card>
                 </Link>
-              </motion.div>
+              </div>
             );
           })}
         </div>
