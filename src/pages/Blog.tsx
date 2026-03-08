@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getBlogPosts, getBlogPage } from "@/lib/sanityQueries";
 import { urlFor } from "@/lib/sanity";
 import { format } from "date-fns";
+import { PageSeo } from "@/components/PageSeo";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -26,9 +27,11 @@ const Blog = () => {
   const pageTitle = blogPageData?.title ?? "Blog";
   const pageSubtitle = blogPageData?.subtitle ?? "Insights, reflections, and updates from Milton Qur'an Institute.";
   const introContent = blogPageData?.introContent;
+  const seo = blogPageData?.seo;
 
   return (
     <main className="py-16 md:py-24">
+      <PageSeo title={seo?.seoTitle} description={seo?.metaDescription} fallbackTitle={`${pageTitle} | MQI`} />
       <div className="container">
         <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">{pageTitle}</h1>

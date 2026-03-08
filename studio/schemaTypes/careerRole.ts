@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import { seoFields } from './seo';
 
 const roleIconOptions = ['Briefcase', 'Users', 'Heart'];
 
@@ -44,22 +45,35 @@ export const careersPage = defineType({
   name: 'careersPage',
   type: 'document',
   title: 'Careers Page',
+  groups: [
+    { name: 'content', title: 'Content' },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
-    defineField({ name: 'title', type: 'string', title: 'Page Title', initialValue: 'Career & Volunteer Opportunities' }),
-    defineField({ name: 'subtitle', type: 'text', title: 'Page Subtitle' }),
+    defineField({ name: 'title', type: 'string', title: 'Page Title', group: 'content', initialValue: 'Career & Volunteer Opportunities' }),
+    defineField({ name: 'subtitle', type: 'text', title: 'Page Subtitle', group: 'content' }),
+    defineField({
+      name: 'whyWorkAtMqi',
+      type: 'text',
+      title: 'Why Work at MQI?',
+      group: 'content',
+      rows: 8,
+      description: 'Content for the "Why Work at MQI?" section.',
+    }),
     defineField({
       name: 'applyFormTitle',
       type: 'string',
       title: 'Apply Form Section Title',
+      group: 'content',
       initialValue: 'Apply for this Position',
-      description: 'Heading above the Jotform when viewing a role.',
     }),
     defineField({
       name: 'introContent',
       type: 'array',
       title: 'Intro / Additional Content',
+      group: 'content',
       of: [{ type: 'block' }],
-      description: 'Optional rich text below the subtitle.',
     }),
+    ...seoFields,
   ],
 });

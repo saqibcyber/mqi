@@ -37,6 +37,38 @@ export const siteSettings = defineType({
     defineField({ name: 'footerAddress', type: 'string', title: 'Footer Address', group: 'footer' }),
     defineField({ name: 'footerPhone', type: 'string', title: 'Footer Phone', group: 'footer' }),
     defineField({ name: 'footerEmail', type: 'string', title: 'Footer Email', group: 'footer' }),
+    defineField({
+      name: 'socialLinks',
+      type: 'array',
+      title: 'Social Media Links',
+      group: 'footer',
+      description: 'Displayed under Contact in the footer.',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'platform',
+              type: 'string',
+              title: 'Platform',
+              validation: (r) => r.required(),
+              options: {
+                list: [
+                  { title: 'Instagram', value: 'instagram' },
+                  { title: 'Facebook', value: 'facebook' },
+                  { title: 'YouTube', value: 'youtube' },
+                  { title: 'Twitter / X', value: 'twitter' },
+                  { title: 'LinkedIn', value: 'linkedin' },
+                  { title: 'TikTok', value: 'tiktok' },
+                ],
+              },
+            }),
+            defineField({ name: 'url', type: 'url', title: 'Profile URL', validation: (r) => r.required() }),
+          ],
+          preview: { select: { platform: 'platform' }, prepare: ({ platform }: { platform?: string }) => ({ title: platform || 'Social' }) },
+        },
+      ],
+    }),
     defineField({ name: 'footerCopyright', type: 'string', title: 'Footer Copyright', description: "e.g. © {year} Milton Qur'an Institute. All rights reserved." }),
   ],
 });

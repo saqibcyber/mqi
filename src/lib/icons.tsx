@@ -16,6 +16,8 @@ import {
   Palette,
   Globe,
   Target,
+  MapPin,
+  DollarSign,
   LucideIcon,
 } from 'lucide-react';
 
@@ -37,6 +39,8 @@ const iconMap: Record<string, LucideIcon> = {
   Palette,
   Globe,
   Target,
+  MapPin,
+  DollarSign,
 };
 
 export function getIcon(name: string | undefined): LucideIcon {

@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getBlogPostBySlug } from "@/lib/sanityQueries";
 import { urlFor } from "@/lib/sanity";
 import { format } from "date-fns";
+import { PageSeo } from "@/components/PageSeo";
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -43,6 +44,7 @@ const BlogPost = () => {
 
   return (
     <main className="py-12 md:py-20">
+      <PageSeo title={post.seo?.seoTitle} description={post.seo?.metaDescription} fallbackTitle={`${post.title} | MQI`} />
       <div className="container max-w-3xl">
         <Link to="/blog" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8 transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to Blog

@@ -1,4 +1,6 @@
 import { defineType, defineField } from 'sanity';
+import { seoFields } from './seo';
+import { hadith } from './hadith';
 
 export const homepage = defineType({
   name: 'homepage',
@@ -6,9 +8,11 @@ export const homepage = defineType({
   title: 'Homepage',
   groups: [
     { name: 'hero', title: 'Hero' },
-    { name: 'programs', title: 'Program Categories' },
+    { name: 'programs', title: 'Our Programs' },
     { name: 'whyChooseUs', title: 'Why Choose Us' },
+    { name: 'testimonials', title: 'Testimonials' },
     { name: 'cta', title: 'CTA Banner' },
+    { name: 'seo', title: 'SEO' },
   ],
   fields: [
     defineField({
@@ -53,11 +57,19 @@ export const homepage = defineType({
       group: 'programs',
     }),
     defineField({
-      name: 'programCategories',
+      name: 'featuredPrograms',
       type: 'array',
-      title: 'Program Categories (cards)',
+      title: 'Featured Programs',
       group: 'programs',
-      of: [{ type: 'homeProgramCategory' }],
+      description: 'Specific programs to display on the homepage. Users can filter by category.',
+      of: [{ type: 'reference', to: [{ type: 'program' }] }],
+    }),
+    defineField({
+      name: 'viewAllProgramsLabel',
+      type: 'string',
+      title: 'View All Programs Button Label',
+      group: 'programs',
+      initialValue: 'View All Programs',
     }),
     defineField({
       name: 'whyChooseUsSectionTitle',
@@ -78,6 +90,31 @@ export const homepage = defineType({
       title: 'Why Choose Us Items',
       group: 'whyChooseUs',
       of: [{ type: 'whyChooseUsItem' }],
+    }),
+    defineField({
+      name: 'testimonialsSectionTitle',
+      type: 'string',
+      title: 'Testimonials Section Title',
+      group: 'testimonials',
+      initialValue: 'What Families Say',
+    }),
+    defineField({
+      name: 'testimonials',
+      type: 'array',
+      title: 'Testimonials',
+      group: 'testimonials',
+      description: 'Short quotes from parents or students.',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'quote', type: 'text', title: 'Quote', validation: (r) => r.required(), rows: 3 }),
+            defineField({ name: 'name', type: 'string', title: 'Name', validation: (r) => r.required() }),
+            defineField({ name: 'role', type: 'string', title: 'Role or description', description: 'e.g. Parent of student, Alumni' }),
+          ],
+          preview: { select: { name: 'name' }, prepare: ({ name }: { name?: string }) => ({ title: name || 'Testimonial' }) },
+        },
+      ],
     }),
     defineField({
       name: 'ctaTitle',
@@ -106,5 +143,13 @@ export const homepage = defineType({
       rows: 2,
       description: 'Optional short note above or near the CTA (e.g. seasonal message).',
     }),
+    defineField({
+      name: 'ctaHadith',
+      type: 'hadith',
+      title: 'Hadith (CTA Section)',
+      group: 'cta',
+      description: 'Optional Hadith displayed within the closing CTA banner.',
+    }),
+    ...seoFields,
   ],
 });

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Facebook, Youtube, Twitter, Linkedin } from "lucide-react";
 import mqiLogo from "@/assets/mqi-logo.svg";
 import { useQuery } from "@tanstack/react-query";
 import { getSiteSettings } from "@/lib/sanityQueries";
@@ -8,7 +8,6 @@ const defaultQuickLinks = [
   { label: "Programs", to: "/programs" },
   { label: "Career & Volunteer", to: "/careers" },
   { label: "Blog", to: "/blog" },
-  { label: "Contact", to: "/contact" },
   { label: "Donate", to: "/donate" },
 ];
 
@@ -25,13 +24,24 @@ const Footer = () => {
   });
 
   const tagline = siteSettings?.footerTagline ?? "Nurturing minds and hearts through Qur'anic education, fostering a community of lifelong learners.";
-  const quickLinks = (siteSettings?.footerQuickLinks?.length ? siteSettings.footerQuickLinks : defaultQuickLinks) as { label: string; to: string }[];
+  const rawQuickLinks = (siteSettings?.footerQuickLinks?.length ? siteSettings.footerQuickLinks : defaultQuickLinks) as { label: string; to: string }[];
+  const quickLinks = rawQuickLinks.filter((link) => link.to !== "/contact");
   const programLinks = (siteSettings?.footerProgramLinks?.length ? siteSettings.footerProgramLinks : defaultProgramLinks) as { label: string; to: string }[];
   const address = siteSettings?.footerAddress ?? "123 Main Street, Milton, ON L9T 1X1";
   const phone = siteSettings?.footerPhone ?? "(905) 555-0123";
   const email = siteSettings?.footerEmail ?? "info@miltonquran.org";
+  const socialLinks = siteSettings?.socialLinks ?? [];
   const copyright = siteSettings?.footerCopyright ?? `© ${new Date().getFullYear()} Milton Qur'an Institute. All rights reserved.`;
   const copyrightText = copyright.includes('{year}') ? copyright.replace('{year}', String(new Date().getFullYear())) : copyright;
+
+  const socialIcons: Record<string, typeof Instagram> = {
+    instagram: Instagram,
+    facebook: Facebook,
+    youtube: Youtube,
+    twitter: Twitter,
+    linkedin: Linkedin,
+    tiktok: Instagram, // Lucide has no TikTok, use generic
+  };
 
   return (
     <footer className="bg-secondary text-secondary-foreground">
@@ -91,6 +101,25 @@ const Footer = () => {
                 <span>{email}</span>
               </li>
             </ul>
+            {socialLinks.length > 0 && (
+              <div className="flex items-center gap-3 mt-4">
+                {socialLinks.map((s) => {
+                  const Icon = socialIcons[s.platform] ?? Mail;
+                  return (
+                    <a
+                      key={s.platform + s.url}
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors p-1.5 rounded-lg hover:bg-secondary-foreground/10"
+                      aria-label={s.platform}
+                    >
+                      <Icon className="h-5 w-5" />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 

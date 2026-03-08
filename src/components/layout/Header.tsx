@@ -12,7 +12,6 @@ const defaultNavLinks = [
   { label: "Programs", to: "/programs" },
   { label: "Career & Volunteer", to: "/careers" },
   { label: "Blog", to: "/blog" },
-  { label: "Contact", to: "/contact" },
 ];
 
 const Header = () => {
@@ -23,7 +22,8 @@ const Header = () => {
     queryFn: getSiteSettings,
   });
 
-  const navLinks = (siteSettings?.navLinks?.length ? siteSettings.navLinks : defaultNavLinks) as { label: string; to: string }[];
+  const rawLinks = (siteSettings?.navLinks?.length ? siteSettings.navLinks : defaultNavLinks) as { label: string; to: string }[];
+  const navLinks = rawLinks.filter((link) => link.to !== "/contact");
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">

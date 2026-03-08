@@ -13,7 +13,6 @@ const DOCUMENT_TYPES = [
   'blogPost',
   'careersPage',
   'careerRole',
-  'contactPage',
   'donatePage',
   'aboutPage',
   'contentPage',

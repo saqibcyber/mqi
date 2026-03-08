@@ -1,4 +1,6 @@
 import { defineType, defineField } from 'sanity';
+import { seoFields } from './seo';
+import { programInfoCard } from './programInfoCard';
 
 const categoryIconOptions = [
   'BookOpen',
@@ -22,13 +24,27 @@ export const program = defineType({
   name: 'program',
   type: 'document',
   title: 'Program',
+  groups: [
+    { name: 'content', title: 'Content' },
+    { name: 'registration', title: 'Registration' },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
-    defineField({ name: 'slug', type: 'slug', title: 'Slug', validation: (r) => r.required(), options: { source: 'title' } }),
-    defineField({ name: 'title', type: 'string', title: 'Title', validation: (r) => r.required() }),
+    defineField({ name: 'slug', type: 'slug', title: 'Slug', group: 'content', validation: (r) => r.required(), options: { source: 'title' } }),
+    defineField({ name: 'title', type: 'string', title: 'Title', group: 'content', validation: (r) => r.required() }),
+    defineField({
+      name: 'heroText',
+      type: 'text',
+      title: 'Hero Text',
+      group: 'content',
+      rows: 2,
+      description: 'Short text displayed beneath the program name on the program detail page.',
+    }),
     defineField({
       name: 'category',
       type: 'reference',
       title: 'Category',
+      group: 'content',
       to: [{ type: 'programCategory' }],
       validation: (r) => r.required(),
     }),
@@ -36,6 +52,7 @@ export const program = defineType({
       name: 'mainImage',
       type: 'image',
       title: 'Main Image',
+      group: 'content',
       description: 'Used on program cards and detail page.',
       options: { hotspot: true },
     }),
@@ -43,37 +60,78 @@ export const program = defineType({
       name: 'shortDescription',
       type: 'text',
       title: 'Short Description (for cards)',
+      group: 'content',
       description: 'Brief summary shown on the Programs listing page.',
       rows: 2,
     }),
-    defineField({ name: 'overview', type: 'text', title: 'Overview', validation: (r) => r.required() }),
-    defineField({ name: 'audience', type: 'string', title: 'Audience' }),
+    defineField({ name: 'overview', type: 'text', title: 'Overview', group: 'content', validation: (r) => r.required() }),
     defineField({
-      name: 'schedule',
-      type: 'string',
-      title: 'Schedule (one-line for card badge)',
-      description: 'Short line for the program card, e.g. "Weekends" or "Mon–Fri".',
+      name: 'infoCards',
+      type: 'array',
+      title: 'Program Information Cards',
+      group: 'content',
+      description: 'Flexible cards (Audience, Fees, etc.). Add unlimited cards with icon, title, and text.',
+      of: [{ type: 'programInfoCard' }],
     }),
     defineField({
-      name: 'scheduleContent',
+      name: 'location',
+      type: 'object',
+      title: 'Location',
+      group: 'content',
+      description: 'Address-based location display (no map).',
+      fields: [
+        defineField({ name: 'address', type: 'text', title: 'Address', rows: 2 }),
+        defineField({ name: 'city', type: 'string', title: 'City' }),
+        defineField({ name: 'province', type: 'string', title: 'Province' }),
+        defineField({ name: 'postalCode', type: 'string', title: 'Postal Code' }),
+      ],
+    }),
+    defineField({
+      name: 'scheduleBlocks',
       type: 'array',
-      title: 'Schedule (detail page)',
-      description: 'Structured schedule content for the program detail page.',
-      of: [{ type: 'block' }],
+      title: 'Schedule',
+      group: 'content',
+      description: 'Flexible schedule blocks. Build different layouts: Program Options, Simple Schedule, Pricing Table, Time Slot Grid, etc. Order determines display order. Shown below Curriculum.',
+      of: [
+        { type: 'scheduleBlockProgramOptions' },
+        { type: 'scheduleBlockSimpleSchedule' },
+        { type: 'scheduleBlockPricingTable' },
+        { type: 'scheduleBlockSimplePricing' },
+        { type: 'scheduleBlockTimeSlotGrid' },
+      ],
     }),
     defineField({
       name: 'curriculum',
       type: 'array',
       title: 'Curriculum',
+      group: 'content',
       of: [{ type: 'string' }],
       options: { layout: 'list' },
+      description: 'Bullet list of curriculum items.',
     }),
-    defineField({ name: 'fees', type: 'string', title: 'Fees' }),
+    defineField({
+      name: 'specialOffers',
+      type: 'array',
+      title: 'Special Offers',
+      group: 'content',
+      description: 'Promotions such as discounts or referral bonuses.',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'title', type: 'string', title: 'Title', validation: (r) => r.required() }),
+            defineField({ name: 'description', type: 'text', title: 'Description', rows: 3 }),
+          ],
+          preview: { select: { title: 'title' }, prepare: ({ title }: { title?: string }) => ({ title: title || 'Offer' }) },
+        },
+      ],
+    }),
     defineField({
       name: 'jotformUrl',
       type: 'string',
-      title: 'Jotform URL',
-      description: 'Full URL (e.g. https://form.jotform.com/123456789) or Jotform form ID only. Opens in a modal on the program page.',
+      title: 'Registration Jotform URL',
+      group: 'registration',
+      description: 'Full URL or form ID. Button links to this (opens in new tab).',
     }),
     defineField({
       name: 'jotformId',
@@ -86,6 +144,7 @@ export const program = defineType({
       name: 'faqs',
       type: 'array',
       title: 'FAQs',
+      group: 'content',
       of: [
         {
           type: 'object',
@@ -97,6 +156,7 @@ export const program = defineType({
         },
       ],
     }),
+    ...seoFields,
   ],
 });
 

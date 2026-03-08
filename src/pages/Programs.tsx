@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getProgramCategories, getProgramsPage, getProgramsForListing } from "@/lib/sanityQueries";
 import { getIcon } from "@/lib/icons";
 import { urlFor } from "@/lib/sanity";
+import { PageSeo } from "@/components/PageSeo";
 import type { ProgramForListing } from "@/lib/sanityQueries";
 
 const fadeUp = {
@@ -45,9 +46,11 @@ const Programs = () => {
   const filteredCategories = activeCategorySlug
     ? categories.filter((c) => c.slug === activeCategorySlug)
     : categories;
+  const seo = programsPageData?.seo;
 
   return (
-    <main className="py-16 md:py-24">
+    <main className="py-20 md:py-28">
+      <PageSeo title={seo?.seoTitle} description={seo?.metaDescription} fallbackTitle={`${pageTitle} | MQI`} />
       <div className="container">
         <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">{pageTitle}</h1>
@@ -139,14 +142,6 @@ const Programs = () => {
                             {(prog.shortDescription || prog.overview) && (
                               <p className="text-sm text-muted-foreground line-clamp-2">{prog.shortDescription ?? prog.overview}</p>
                             )}
-                            <div className="flex flex-wrap gap-2">
-                              {prog.audience && (
-                                <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">{prog.audience}</span>
-                              )}
-                              {prog.schedule && (
-                                <span className="text-xs px-3 py-1 rounded-full bg-accent/20 text-accent-foreground font-medium">{prog.schedule}</span>
-                              )}
-                            </div>
                             <Button variant="link" className="p-0 h-auto text-primary font-medium">
                               Learn More →
                             </Button>

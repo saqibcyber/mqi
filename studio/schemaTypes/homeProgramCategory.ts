@@ -60,7 +60,20 @@ export const ctaButton = defineType({
   title: 'CTA Button',
   fields: [
     defineField({ name: 'label', type: 'string', title: 'Label', validation: (r) => r.required() }),
-    defineField({ name: 'to', type: 'string', title: 'Path', validation: (r) => r.required() }),
+    defineField({
+      name: 'to',
+      type: 'string',
+      title: 'Destination',
+      description: 'Internal path (e.g. /programs) or full URL (e.g. https://form.jotform.com/123). External URLs open in new tab.',
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'isExternal',
+      type: 'boolean',
+      title: 'Open in new tab',
+      description: 'When enabled, opens link in a new tab (use for external URLs like Jotform).',
+      initialValue: false,
+    }),
     defineField({
       name: 'variant',
       type: 'string',

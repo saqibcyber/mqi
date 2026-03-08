@@ -9,6 +9,11 @@ export interface NavLink {
   to: string;
 }
 
+export interface SocialLink {
+  platform: string;
+  url: string;
+}
+
 export interface SiteSettings {
   navLinks?: NavLink[];
   footerTagline?: string;
@@ -17,6 +22,7 @@ export interface SiteSettings {
   footerAddress?: string;
   footerPhone?: string;
   footerEmail?: string;
+  socialLinks?: SocialLink[];
   footerCopyright?: string;
 }
 
@@ -37,7 +43,14 @@ export interface WhyChooseUsItem {
 export interface CtaButton {
   label: string;
   to: string;
+  isExternal?: boolean;
   variant?: 'primary' | 'accent';
+}
+
+export interface Hadith {
+  arabic?: string;
+  english?: string;
+  reference?: string;
 }
 
 export interface Homepage {
@@ -48,13 +61,18 @@ export interface Homepage {
   programsSectionTitle?: string;
   programsSectionSubtitle?: string;
   programCategories?: HomeProgramCategory[];
+  featuredPrograms?: { _id: string; slug?: string; title?: string; category?: { slug?: string }; shortDescription?: string; mainImage?: unknown }[];
+  viewAllProgramsLabel?: string;
   whyChooseUsSectionTitle?: string;
   whyChooseUsSectionSubtitle?: string;
   whyChooseUsItems?: WhyChooseUsItem[];
+  testimonialsSectionTitle?: string;
+  testimonials?: { quote?: string; name?: string; role?: string }[];
   ctaTitle?: string;
   ctaSubtitle?: string;
   ctaButtons?: CtaButton[];
   footerNote?: string;
+  ctaHadith?: Hadith;
 }
 
 export interface ProgramCategoryRef {
@@ -78,22 +96,82 @@ export interface ProgramFAQ {
   a?: string;
 }
 
+export interface ProgramInfoCard {
+  icon?: string;
+  title: string;
+  text: string;
+}
+
+export interface ScheduleBlockBase {
+  _type: string;
+  _key?: string;
+  blockTitle?: string;
+}
+
+export interface ScheduleBlockProgramOptions extends ScheduleBlockBase {
+  _type: 'scheduleBlockProgramOptions';
+  options?: { label: string; price?: string }[];
+}
+
+export interface ScheduleBlockSimpleSchedule extends ScheduleBlockBase {
+  _type: 'scheduleBlockSimpleSchedule';
+  days?: string;
+  time?: string;
+  additionalNote?: string;
+}
+
+export interface ScheduleBlockPricingTable extends ScheduleBlockBase {
+  _type: 'scheduleBlockPricingTable';
+  rows?: { description: string; price: string }[];
+}
+
+export interface ScheduleBlockSimplePricing extends ScheduleBlockBase {
+  _type: 'scheduleBlockSimplePricing';
+  items?: { label: string; price: string }[];
+}
+
+export interface ScheduleBlockTimeSlotGrid extends ScheduleBlockBase {
+  _type: 'scheduleBlockTimeSlotGrid';
+  slots?: { day?: string; time?: string; optionalLabel?: string }[];
+}
+
+export type ScheduleBlock =
+  | ScheduleBlockProgramOptions
+  | ScheduleBlockSimpleSchedule
+  | ScheduleBlockPricingTable
+  | ScheduleBlockSimplePricing
+  | ScheduleBlockTimeSlotGrid;
+
+export interface ProgramLocation {
+  address?: string;
+  city?: string;
+  province?: string;
+  postalCode?: string;
+}
+
+export interface SpecialOffer {
+  title: string;
+  description?: string;
+}
+
 export interface Program {
   _id: string;
   slug: string;
   title: string;
+  heroText?: string;
   category?: { _id: string; title: string; slug?: string };
   mainImage?: { asset?: { url: string }; _type?: string };
   shortDescription?: string;
   overview?: string;
-  audience?: string;
-  schedule?: string;
-  scheduleContent?: unknown[];
+  infoCards?: ProgramInfoCard[];
+  location?: ProgramLocation;
+  scheduleBlocks?: ScheduleBlock[];
   curriculum?: string[];
-  fees?: string;
+  specialOffers?: SpecialOffer[];
   jotformUrl?: string;
   jotformId?: string;
   faqs?: ProgramFAQ[];
+  seo?: SeoData;
 }
 
 export interface ProgramForListing extends Program {
@@ -104,6 +182,7 @@ export interface ProgramsPage {
   title?: string;
   subtitle?: string;
   introContent?: unknown[];
+  seo?: SeoData;
 }
 
 export interface BlogPostListItem {
@@ -119,12 +198,14 @@ export interface BlogPostFull extends BlogPostListItem {
   category?: string;
   author?: string;
   body?: unknown[];
+  seo?: SeoData;
 }
 
 export interface BlogPage {
   title?: string;
   subtitle?: string;
   introContent?: unknown[];
+  seo?: SeoData;
 }
 
 export interface CareerRole {
@@ -141,24 +222,10 @@ export interface CareerRole {
 export interface CareersPage {
   title?: string;
   subtitle?: string;
+  whyWorkAtMqi?: string;
   applyFormTitle?: string;
   introContent?: unknown[];
-}
-
-export interface ContactInfoItem {
-  type: string;
-  title?: string;
-  content?: string;
-}
-
-export interface ContactPage {
-  title?: string;
-  subtitle?: string;
-  jotformUrl?: string;
-  formTitle?: string;
-  introText?: string;
-  contactInfo?: ContactInfoItem[];
-  mapEmbedUrl?: string;
+  seo?: SeoData;
 }
 
 export interface DonateTrustBullet {
@@ -169,12 +236,18 @@ export interface DonateTrustBullet {
 export interface DonatePage {
   title?: string;
   subtitle?: string;
+  hadith?: Hadith;
   trustBullets?: DonateTrustBullet[];
+  howDonationHelps?: string[];
+  studentSponsorship?: string;
   jotformDonateUrl?: string;
-  donateFormTitle?: string;
+  donateCtaLabel?: string;
   jotformSponsorStudentUrl?: string;
+  sponsorCtaLabel?: string;
+  donateFormTitle?: string;
   sponsorFormTitle?: string;
   additionalContent?: unknown[];
+  seo?: SeoData;
 }
 
 export interface AboutTeacher {
@@ -194,11 +267,17 @@ export interface AboutGraduate {
 export interface AboutPage {
   title?: string;
   subtitle?: string;
+  ourStory?: string;
+  ourMission?: string;
+  ourVision?: string;
+  ourValues?: { title: string; description?: string; icon?: string }[];
+  ourApproach?: string;
   instituteText?: string;
   heroImage?: { asset?: { url: string } };
   teachers?: AboutTeacher[];
   graduates?: AboutGraduate[];
   additionalContent?: unknown[];
+  seo?: SeoData;
 }
 
 export interface ContentBlockRichText {
@@ -225,6 +304,11 @@ export interface ContentBlockCta {
 
 export type TemplateSection = ContentBlockRichText | ContentBlockImage | ContentBlockCta;
 
+export interface SeoData {
+  seoTitle?: string | null;
+  metaDescription?: string | null;
+}
+
 export interface ContentPageDoc {
   _type: 'contentPage';
   _id: string;
@@ -234,6 +318,7 @@ export interface ContentPageDoc {
   heroImage?: { asset?: { url: string } };
   mainContent?: unknown[];
   sections?: TemplateSection[];
+  seo?: SeoData;
 }
 
 export interface LandingPageDoc {
@@ -246,6 +331,7 @@ export interface LandingPageDoc {
   heroCtaButtons?: CtaButton[];
   body?: unknown[];
   sections?: TemplateSection[];
+  seo?: SeoData;
 }
 
 export interface InfoPageDoc {
@@ -256,6 +342,7 @@ export interface InfoPageDoc {
   subtitle?: string;
   introText?: string;
   sections?: TemplateSection[];
+  seo?: SeoData;
 }
 
 export type TemplatePageDoc = ContentPageDoc | LandingPageDoc | InfoPageDoc;
@@ -269,6 +356,7 @@ const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   footerAddress,
   footerPhone,
   footerEmail,
+  socialLinks[]{ platform, url },
   footerCopyright
 }`;
 
@@ -276,20 +364,32 @@ const HOMEPAGE_QUERY = `*[_type == "homepage"][0]{
   heroEyebrow,
   heroTitle,
   heroSubtitle,
-  heroCtaButtons[]{ label, to, variant },
+  heroCtaButtons[]{ label, to, isExternal, variant },
   programsSectionTitle,
   programsSectionSubtitle,
-  programCategories[]{ title, description, icon, to, "categorySlug": programCategory->slug.current },
+  "featuredPrograms": featuredPrograms[]->{
+    _id,
+    "slug": slug.current,
+    title,
+    shortDescription,
+    mainImage ${imageProjection},
+    "category": category->{ _id, title, "slug": slug.current }
+  },
+  viewAllProgramsLabel,
   whyChooseUsSectionTitle,
   whyChooseUsSectionSubtitle,
   whyChooseUsItems[]{ icon, title, description },
+  testimonialsSectionTitle,
+  testimonials[]{ quote, name, role },
   ctaTitle,
   ctaSubtitle,
-  ctaButtons[]{ label, to, variant },
-  footerNote
+  ctaButtons[]{ label, to, isExternal, variant },
+  footerNote,
+  ctaHadith{ arabic, english, reference },
+  seo{ seoTitle, metaDescription }
 }`;
 
-const PROGRAMS_PAGE_QUERY = `*[_type == "programsPage"][0]{ title, subtitle, introContent }`;
+const PROGRAMS_PAGE_QUERY = `*[_type == "programsPage"][0]{ title, subtitle, introContent, seo{ seoTitle, metaDescription } }`;
 
 const PROGRAM_CATEGORIES_QUERY = `*[_type == "programCategory"] | order(title asc){
   _id,
@@ -305,8 +405,6 @@ const PROGRAMS_FOR_LISTING_QUERY = `*[_type == "program"] | order(category->titl
   "slug": slug.current,
   title,
   shortDescription,
-  audience,
-  schedule,
   mainImage ${imageProjection},
   "category": category->{ _id, title, "slug": slug.current }
 }`;
@@ -315,21 +413,34 @@ const PROGRAM_BY_SLUG_QUERY = `*[_type == "program" && slug.current == $slug][0]
   _id,
   "slug": slug.current,
   title,
-  category->{ _id, title },
+  heroText,
+  category->{ _id, title, "slug": slug.current },
   mainImage ${imageProjection},
   shortDescription,
   overview,
-  audience,
-  schedule,
-  scheduleContent,
+  infoCards[]{ icon, title, text },
+  location{ address, city, province, postalCode },
+  scheduleBlocks[]{
+    _type,
+    _key,
+    blockTitle,
+    options[]{ label, price },
+    days,
+    time,
+    additionalNote,
+    rows[]{ description, price },
+    items[]{ label, price },
+    slots[]{ day, time, optionalLabel }
+  },
   curriculum,
-  fees,
+  specialOffers[]{ title, description },
   jotformUrl,
   jotformId,
-  faqs[]{ q, a }
+  faqs[]{ q, a },
+  seo{ seoTitle, metaDescription }
 }`;
 
-const BLOG_PAGE_QUERY = `*[_type == "blogPage"][0]{ title, subtitle, introContent }`;
+const BLOG_PAGE_QUERY = `*[_type == "blogPage"][0]{ title, subtitle, introContent, seo{ seoTitle, metaDescription } }`;
 
 const BLOG_POSTS_QUERY = `*[_type == "blogPost"] | order(publishedAt desc){
   _id,
@@ -349,14 +460,17 @@ const BLOG_POST_BY_SLUG_QUERY = `*[_type == "blogPost" && slug.current == $slug]
   mainImage ${imageProjection},
   category,
   author,
-  body
+  body,
+  seo{ seoTitle, metaDescription }
 }`;
 
 const CAREERS_PAGE_QUERY = `*[_type == "careersPage"][0]{
   title,
   subtitle,
+  whyWorkAtMqi,
   applyFormTitle,
-  introContent
+  introContent,
+  seo{ seoTitle, metaDescription }
 }`;
 
 const CAREER_ROLES_QUERY = `*[_type == "careerRole"] | order(title asc){
@@ -370,30 +484,31 @@ const CAREER_ROLES_QUERY = `*[_type == "careerRole"] | order(title asc){
   jotformLink
 }`;
 
-const CONTACT_PAGE_QUERY = `*[_type == "contactPage"][0]{
-  title,
-  subtitle,
-  jotformUrl,
-  formTitle,
-  introText,
-  contactInfo[]{ type, title, content },
-  mapEmbedUrl
-}`;
-
 const DONATE_PAGE_QUERY = `*[_type == "donatePage"][0]{
   title,
   subtitle,
+  hadith{ arabic, english, reference },
   trustBullets[]{ title, desc },
+  howDonationHelps,
+  studentSponsorship,
   jotformDonateUrl,
-  donateFormTitle,
+  donateCtaLabel,
   jotformSponsorStudentUrl,
+  sponsorCtaLabel,
+  donateFormTitle,
   sponsorFormTitle,
-  additionalContent
+  additionalContent,
+  seo{ seoTitle, metaDescription }
 }`;
 
 const ABOUT_PAGE_QUERY = `*[_type == "aboutPage"][0]{
   title,
   subtitle,
+  ourStory,
+  ourMission,
+  ourVision,
+  ourValues[]{ title, description, icon },
+  ourApproach,
   instituteText,
   heroImage ${imageProjection},
   teachers[]{
@@ -408,7 +523,8 @@ const ABOUT_PAGE_QUERY = `*[_type == "aboutPage"][0]{
     yearOfGraduation,
     photo ${imageProjection}
   },
-  additionalContent
+  additionalContent,
+  seo{ seoTitle, metaDescription }
 }`;
 
 const TEMPLATE_PAGE_QUERY = `*[_type in ["contentPage", "landingPage", "infoPage"] && slug.current == $slug][0]{
@@ -432,7 +548,8 @@ const TEMPLATE_PAGE_QUERY = `*[_type in ["contentPage", "landingPage", "infoPage
     title,
     subtitle,
     buttons[]{ label, to, variant }
-  }
+  },
+  seo{ seoTitle, metaDescription }
 }`;
 
 // --- Fetch functions ---
@@ -478,10 +595,6 @@ export async function getCareersPage(): Promise<CareersPage | null> {
 
 export async function getCareerRoles(): Promise<CareerRole[]> {
   return sanityClient.fetch<CareerRole[]>(CAREER_ROLES_QUERY);
-}
-
-export async function getContactPage(): Promise<ContactPage | null> {
-  return sanityClient.fetch<ContactPage | null>(CONTACT_PAGE_QUERY);
 }
 
 export async function getDonatePage(): Promise<DonatePage | null> {

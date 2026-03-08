@@ -4,6 +4,7 @@ import { PortableText } from "@portabletext/react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { getTemplatePageBySlug, type TemplatePageDoc, type ContentBlockRichText, type ContentBlockImage, type ContentBlockCta } from "@/lib/sanityQueries";
+import { PageSeo } from "@/components/PageSeo";
 import { urlFor } from "@/lib/sanity";
 
 const fadeUp = {
@@ -131,6 +132,7 @@ const TemplatePage = () => {
 
   return (
     <main className="py-16 md:py-24">
+      <PageSeo title={page.seo?.seoTitle} description={page.seo?.metaDescription} fallbackTitle={`${page.title} | MQI`} />
       <div className="container max-w-4xl">
         <motion.div
           initial="hidden"

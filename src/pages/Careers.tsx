@@ -8,7 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getCareerRoles, getCareersPage } from "@/lib/sanityQueries";
 import { getIcon } from "@/lib/icons";
 import { getJotformUrl } from "@/lib/jotform";
-import { JotformEmbed } from "@/components/JotformEmbed";
+import { CtaLink } from "@/components/CtaLink";
+import { PageSeo } from "@/components/PageSeo";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -30,12 +31,15 @@ const Careers = () => {
   const role = selectedRole ? roles.find((r) => r._id === selectedRole) : null;
   const pageTitle = careersPageData?.title ?? "Career & Volunteer Opportunities";
   const pageSubtitle = careersPageData?.subtitle ?? "Join our team and make a meaningful impact in the community through Qur'anic education.";
+  const whyWorkAtMqi = careersPageData?.whyWorkAtMqi;
   const applyFormTitle = careersPageData?.applyFormTitle ?? "Apply for this Position";
   const introContent = careersPageData?.introContent;
-  const hasForm = role ? !!getJotformUrl(role.jotformLink) : false;
+  const formUrl = role ? getJotformUrl(role.jotformLink) : null;
+  const seo = careersPageData?.seo;
 
   return (
-    <main className="py-16 md:py-24">
+    <main className="py-20 md:py-28">
+      <PageSeo title={seo?.seoTitle} description={seo?.metaDescription} fallbackTitle={`${pageTitle} | MQI`} />
       <div className="container">
         <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">{pageTitle}</h1>
@@ -49,6 +53,13 @@ const Careers = () => {
             </div>
           )}
         </motion.div>
+
+        {whyWorkAtMqi && (
+          <section className="mb-16 max-w-3xl mx-auto">
+            <h2 className="text-2xl font-bold text-foreground mb-4 text-center">Why Work at MQI?</h2>
+            <p className="text-muted-foreground whitespace-pre-line text-center">{whyWorkAtMqi}</p>
+          </section>
+        )}
 
         {!selectedRole ? (
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -107,19 +118,17 @@ const Careers = () => {
                   </>
                 )}
 
-                {/* Apply form – inline in page layout */}
+                {/* Apply CTA */}
                 <section className="mt-10">
                   <h3 className="text-2xl font-semibold text-foreground mb-2">{applyFormTitle}</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Submit your application via the form below.
+                    Click the button below to submit your application via our form.
                   </p>
-                  <JotformEmbed
-                    formUrlOrId={role.jotformLink}
-                    minHeight={720}
-                    title={`Apply: ${role.title}`}
-                    emptyMessage="No application form is configured for this role."
-                    borderless
-                  />
+                  {formUrl ? (
+                    <CtaLink label="Apply for this Position" to={formUrl} isExternal variant="accent" />
+                  ) : (
+                    <p className="text-muted-foreground text-sm">No application form URL is configured for this role.</p>
+                  )}
                 </section>
               </>
             )}

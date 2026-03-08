@@ -91,13 +91,53 @@
   }
 }
 
-/* Islamic geometric pattern accent - used as decorative borders */
+/* Islamic geometric pattern accent - subtle, lightweight */
 .geometric-border {
-  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%232F8F6B' stroke-width='0.5' opacity='0.15'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z'/%3E%3Cpath d='M20 5L35 20L20 35L5 20Z'/%3E%3Cpath d='M20 10L30 20L20 30L10 20Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-color: hsl(var(--background));
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%232F8F6B' stroke-width='0.4' opacity='0.12'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z'/%3E%3Cpath d='M20 5L35 20L20 35L5 20Z'/%3E%3Cpath d='M20 10L30 20L20 30L10 20Z'/%3E%3C/g%3E%3C/svg%3E");
   background-repeat: repeat;
 }
 
 .geometric-divider {
   height: 4px;
   background: linear-gradient(90deg, transparent, hsl(155 51% 37% / 0.3), hsl(45 47% 52% / 0.5), hsl(155 51% 37% / 0.3), transparent);
+}
+
+/* Islamic-inspired 8-point star motif - subtle section accents */
+.pattern-stars {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l4 12 12 4-4 12 4 12-12 4-4 12-4-12-12-4 4-12-4-12 12-4z' fill='none' stroke='%232F8F6B' stroke-width='0.3' opacity='0.08'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Soft gradient accent for sections */
+.section-gradient {
+  background: linear-gradient(180deg, hsl(var(--muted) / 0.3) 0%, transparent 100%);
+}
+
+/* Light geometric line accent */
+.geometric-line {
+  background: linear-gradient(90deg, transparent, hsl(155 51% 37% / 0.2), hsl(45 47% 52% / 0.3), hsl(155 51% 37% / 0.2), transparent);
+  height: 1px;
+}
+
+/* Elegant section divider - Islamic geometric ornamental strip (repeating diamond motif) */
+.section-divider {
+  height: 24px;
+  margin: 0 auto;
+  max-width: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'%3E%3Cpath d='M0 12h48' fill='none' stroke='%232F8F6B' stroke-width='0.6' opacity='0.4'/%3E%3Cpath d='M12 6l6 6-6 6-6-6z' fill='none' stroke='%232F8F6B' stroke-width='0.5' opacity='0.5'/%3E%3Cpath d='M30 6l6 6-6 6-6-6z' fill='none' stroke='%232F8F6B' stroke-width='0.5' opacity='0.5'/%3E%3Cpath d='M24 4l4 4-4 4-4-4z' fill='none' stroke='%23B8860B' stroke-width='0.4' opacity='0.45'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: center;
+}
+
+/* Lightweight Islamic geometric accent for section backgrounds */
+.bg-pattern-subtle {
+  background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 0L32 16L16 32L0 16Z' fill='none' stroke='%232F8F6B' stroke-width='0.35' opacity='0.06'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Pattern for dark backgrounds (CTA, footer) - lighter stroke */
+.pattern-dark {
+  background-image: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 0l3 9 9 3-3 9 3 9-9 3-3 9-3-9-9-3 3-9-3-9 9-3z' fill='none' stroke='%23ffffff' stroke-width='0.25' opacity='0.06'/%3E%3C/svg%3E");
+  background-repeat: repeat;
 }

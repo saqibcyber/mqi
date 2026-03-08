@@ -1,10 +1,11 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { useQuery } from "@tanstack/react-query";
 import { getDonatePage } from "@/lib/sanityQueries";
-import { JotformEmbed } from "@/components/JotformEmbed";
+import { CtaLink } from "@/components/CtaLink";
+import { PageSeo } from "@/components/PageSeo";
+import { getJotformUrl } from "@/lib/jotform";
 
 const defaultTrustBullets = [
   { title: "Tax Deductible", desc: "All donations are eligible for tax receipts." },
@@ -18,7 +19,6 @@ const fadeUp = {
 };
 
 const Donate = () => {
-  const [activeForm, setActiveForm] = useState<"donate" | "sponsor">("donate");
   const { data: donatePageData } = useQuery({
     queryKey: ["donatePage"],
     queryFn: getDonatePage,
@@ -26,14 +26,19 @@ const Donate = () => {
 
   const pageTitle = donatePageData?.title ?? "Support Our Mission";
   const pageSubtitle = donatePageData?.subtitle ?? "Your generous contribution helps us provide quality Qur'anic education and maintain our programs for the community.";
+  const hadith = donatePageData?.hadith;
   const trustBullets = (donatePageData?.trustBullets?.length ? donatePageData.trustBullets : defaultTrustBullets) as Array<{ title?: string; desc?: string }>;
-  const donateFormTitle = donatePageData?.donateFormTitle ?? "Make a Donation";
-  const sponsorFormTitle = donatePageData?.sponsorFormTitle ?? "Sponsor a Student";
-  const hasDonateForm = !!donatePageData?.jotformDonateUrl;
-  const hasSponsorForm = !!donatePageData?.jotformSponsorStudentUrl;
+  const howDonationHelps = donatePageData?.howDonationHelps ?? [];
+  const studentSponsorship = donatePageData?.studentSponsorship;
+  const donateUrl = getJotformUrl(donatePageData?.jotformDonateUrl);
+  const sponsorUrl = getJotformUrl(donatePageData?.jotformSponsorStudentUrl);
+  const donateCtaLabel = donatePageData?.donateCtaLabel ?? "Make a Donation";
+  const sponsorCtaLabel = donatePageData?.sponsorCtaLabel ?? "Sponsor a Student";
+  const seo = donatePageData?.seo;
 
   return (
-    <main className="py-16 md:py-24">
+    <main className="py-20 md:py-28">
+      <PageSeo title={seo?.seoTitle} description={seo?.metaDescription} fallbackTitle={`${pageTitle} | MQI`} />
       <div className="container max-w-3xl">
         <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center mb-12">
           <div className="mx-auto w-16 h-16 rounded-2xl bg-accent/20 flex items-center justify-center mb-6">
@@ -46,11 +51,24 @@ const Donate = () => {
           </p>
         </motion.div>
 
+        {/* Hadith */}
+        {hadith && (hadith.arabic || hadith.english) && (
+          <blockquote className="mb-12 p-6 rounded-2xl border border-border/50 bg-card/50 space-y-3">
+            {hadith.arabic && (
+              <p className="text-2xl md:text-3xl font-arabic leading-loose" dir="rtl" style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif" }}>
+                {hadith.arabic}
+              </p>
+            )}
+            {hadith.english && <p className="text-muted-foreground italic">"{hadith.english}"</p>}
+            {hadith.reference && <footer className="text-muted-foreground/80 text-sm">— {hadith.reference}</footer>}
+          </blockquote>
+        )}
+
         {/* Trust section */}
         {trustBullets.length > 0 && (
           <div className="grid sm:grid-cols-3 gap-6 mb-12">
-            {trustBullets.map((item) => (
-              <div key={item.title} className="text-center p-4">
+            {trustBullets.map((item, i) => (
+              <div key={item.title ?? `trust-${i}`} className="text-center p-4">
                 <h3 className="font-semibold text-foreground text-sm mb-1">{item.title}</h3>
                 <p className="text-xs text-muted-foreground">{item.desc}</p>
               </div>
@@ -58,60 +76,39 @@ const Donate = () => {
           </div>
         )}
 
-        {/* Donation forms – toggle between one-time and sponsor */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          {(hasDonateForm || hasSponsorForm) && (
-            <div className="inline-flex rounded-full bg-muted p-1 mb-8">
-              <button
-                type="button"
-                onClick={() => setActiveForm("donate")}
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                  activeForm === "donate"
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                One-time Donation
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveForm("sponsor")}
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                  activeForm === "sponsor"
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Sponsor a Student
-              </button>
-            </div>
-          )}
+        {/* How Your Donation Helps */}
+        {howDonationHelps.length > 0 && (
+          <section className="mb-12">
+            <h2 className="text-xl font-bold text-foreground mb-4">How Your Donation Helps</h2>
+            <ul className="space-y-2">
+              {howDonationHelps.map((item, i) => (
+                <li key={i} className="flex items-start gap-3 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-          {activeForm === "donate" && (
-            <div>
-              <h2 className="text-2xl font-bold text-foreground mb-4">{donateFormTitle}</h2>
-              <JotformEmbed
-                formUrlOrId={donatePageData?.jotformDonateUrl}
-                minHeight={900}
-                title="General donations"
-                emptyMessage="Add a Jotform URL in Sanity (Donate Page → General Donations Jotform URL)."
-                borderless
-              />
-            </div>
-          )}
+        {/* Student Sponsorship */}
+        {studentSponsorship && (
+          <section className="mb-12">
+            <h2 className="text-xl font-bold text-foreground mb-4">Sponsor a Student</h2>
+            <p className="text-muted-foreground whitespace-pre-line">{studentSponsorship}</p>
+          </section>
+        )}
 
-          {activeForm === "sponsor" && (
-            <div>
-              <h2 className="text-2xl font-bold text-foreground mb-4">{sponsorFormTitle}</h2>
-              <JotformEmbed
-                formUrlOrId={donatePageData?.jotformSponsorStudentUrl}
-                minHeight={900}
-                title="Sponsor a student"
-                emptyMessage="Add a Jotform URL in Sanity (Donate Page → Sponsor a Student Jotform URL)."
-                borderless
-              />
-            </div>
-          )}
+        {/* Two clear CTAs */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="space-y-8">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            {donateUrl && (
+              <CtaLink label={donateCtaLabel} to={donateUrl} isExternal variant="primary" />
+            )}
+            {sponsorUrl && (
+              <CtaLink label={sponsorCtaLabel} to={sponsorUrl} isExternal variant="accent" />
+            )}
+          </div>
 
           {donatePageData?.additionalContent && donatePageData.additionalContent.length > 0 && (
             <div className="mt-12 prose prose-lg max-w-none prose-p:text-muted-foreground">

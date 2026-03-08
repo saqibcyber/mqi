@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import { seoFields } from '../seo';
 
 const sectionBlocks = [
   { type: 'contentBlockRichText' },
@@ -11,6 +12,7 @@ export const contentPage = defineType({
   type: 'document',
   title: 'Content Page',
   description: 'Generic content page with title, optional hero image, and flexible sections.',
+  groups: [{ name: 'content', title: 'Content', default: true }, { name: 'seo', title: 'SEO' }],
   fields: [
     defineField({
       name: 'slug',
@@ -39,6 +41,7 @@ export const contentPage = defineType({
       title: 'Additional Sections',
       of: sectionBlocks,
     }),
+    ...seoFields,
   ],
 });
 
@@ -47,6 +50,7 @@ export const landingPage = defineType({
   type: 'document',
   title: 'Landing Page',
   description: 'Landing-style page with hero emphasis and CTA.',
+  groups: [{ name: 'content', title: 'Content', default: true }, { name: 'seo', title: 'SEO' }],
   fields: [
     defineField({
       name: 'slug',
@@ -81,6 +85,7 @@ export const landingPage = defineType({
       title: 'Sections',
       of: sectionBlocks,
     }),
+    ...seoFields,
   ],
 });
 
@@ -89,6 +94,7 @@ export const infoPage = defineType({
   type: 'document',
   title: 'Info Page',
   description: 'Simple info page with optional intro and flexible content blocks.',
+  groups: [{ name: 'content', title: 'Content', default: true }, { name: 'seo', title: 'SEO' }],
   fields: [
     defineField({
       name: 'slug',
@@ -111,5 +117,6 @@ export const infoPage = defineType({
       title: 'Content Sections',
       of: sectionBlocks,
     }),
+    ...seoFields,
   ],
 });
