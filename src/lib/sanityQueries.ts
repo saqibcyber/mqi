@@ -72,7 +72,7 @@ export interface Homepage {
   ctaSubtitle?: string;
   ctaButtons?: CtaButton[];
   footerNote?: string;
-  heroStats?: { label?: string; value?: string; icon?: { asset?: { url: string } } }[];
+  heroStats?: { label?: string; value?: string; icon?: string }[];
 }
 
 export interface ProgramCategoryRef {

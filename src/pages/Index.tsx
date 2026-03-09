@@ -60,6 +60,7 @@ const Index = () => {
     .filter(Boolean))] as string[];
   const [programFilter, setProgramFilter] = useState<string | null>(null);
   const programsScrollRef = useRef<HTMLDivElement>(null);
+  const testimonialsScrollRef = useRef<HTMLDivElement | null>(null);
   const filteredPrograms = programFilter
     ? featuredPrograms.filter((p: { category?: { slug?: string } }) => p.category?.slug === programFilter)
     : featuredPrograms;
@@ -127,21 +128,18 @@ const Index = () => {
 
       {/* Hero Stats - scrolling marquee */}
       {heroStats.length > 0 && (
-        <div className="bg-background border-t border-border/50 py-3 overflow-hidden">
-          <div className="hero-stats-marquee flex items-center gap-16 px-4 md:px-8 whitespace-nowrap">
+        <div className="bg-background py-4 overflow-hidden -mt-px">
+          <div className="hero-stats-marquee flex items-center gap-20 px-4 md:px-8 whitespace-nowrap">
             {[...heroStats, ...heroStats, ...heroStats].map((s: any, i: number) => {
-              const iconUrl =
-                s?.icon?.asset?.url
-                  ? urlFor(s.icon).width(32).height(32).fit("contain").url()
-                  : null;
+              const Icon = s?.icon ? getIcon(s.icon) : null;
               return (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-3 text-sm md:text-base font-medium text-muted-foreground"
+                  className="inline-flex items-center gap-4 text-base md:text-lg font-medium text-muted-foreground"
                 >
-                  {iconUrl && (
-                    <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary/5">
-                      <img src={iconUrl} alt="" className="h-5 w-5 object-contain" />
+                  {Icon && (
+                    <span className="inline-flex items-center justify-center h-9 w-9 rounded-full bg-primary/5 border border-primary/20">
+                      <Icon className="h-5 w-5 text-primary" />
                     </span>
                   )}
                   <span className="text-primary font-semibold">{s.label}</span>
@@ -359,32 +357,64 @@ const Index = () => {
           </section>
       )}
 
-      {/* Testimonials */}
+      {/* Testimonials - single-row carousel with arrows */}
       {testimonials.length > 0 && (
         <section className="py-20 md:py-28 bg-background">
           <div className="container">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mb-12">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="text-center mb-12"
+            >
               <h2 className="text-3xl md:text-4xl font-bold text-foreground">{testimonialsSectionTitle}</h2>
               <div className="geometric-divider w-24 mx-auto mt-4 mb-4" />
             </motion.div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 content-max mx-auto">
-              {testimonials.map((t, i) => (
-                <motion.div
-                  key={t.name ?? i}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={fadeUp}
-                >
-                  <Card className="h-full border-border/50 bg-card/80">
-                    <CardContent className="p-6">
-                      <p className="text-muted-foreground italic mb-4">&ldquo;{t.quote}&rdquo;</p>
-                      <p className="font-semibold text-foreground">{t.name}</p>
-                      {t.role && <p className="text-sm text-primary">{t.role}</p>}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+            <div className="relative content-max mx-auto">
+              <div
+                ref={testimonialsScrollRef}
+                className="flex gap-6 overflow-x-auto pb-4 -mx-2 px-2 md:mx-0 md:px-0 scrollbar-thin hide-scrollbar snap-x snap-mandatory"
+              >
+                {testimonials.map((t, i) => (
+                  <motion.div
+                    key={t.name ?? i}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={fadeUp}
+                    className="flex-shrink-0 w-[280px] snap-start"
+                  >
+                    <Card className="h-full border-border/50 bg-card/80">
+                      <CardContent className="p-6">
+                        <p className="text-muted-foreground italic mb-4">&ldquo;{t.quote}&rdquo;</p>
+                        <p className="font-semibold text-foreground">{t.name}</p>
+                        {t.role && <p className="text-sm text-primary">{t.role}</p>}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+              {testimonials.length > 0 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => testimonialsScrollRef.current?.scrollBy({ left: -320, behavior: "smooth" })}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-10 h-10 rounded-full bg-background/90 shadow-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-background transition-colors z-10"
+                    aria-label="Scroll testimonials left"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => testimonialsScrollRef.current?.scrollBy({ left: 320, behavior: "smooth" })}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-10 h-10 rounded-full bg-background/90 shadow-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-background transition-colors z-10"
+                    aria-label="Scroll testimonials right"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </section>

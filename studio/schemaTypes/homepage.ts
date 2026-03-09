@@ -1,6 +1,18 @@
 import { defineType, defineField } from 'sanity';
 import { seoFields } from './seo';
 
+const heroStatIconOptions = [
+  'BookOpen',
+  'GraduationCap',
+  'Sun',
+  'Users',
+  'Award',
+  'Heart',
+  'Clock',
+  'Shield',
+  'Briefcase',
+];
+
 export const homepage = defineType({
   name: 'homepage',
   type: 'document',
@@ -54,7 +66,13 @@ export const homepage = defineType({
           fields: [
             defineField({ name: 'label', type: 'string', title: 'Label', validation: (r) => r.required(), description: 'e.g. 500+ Students' }),
             defineField({ name: 'value', type: 'string', title: 'Value (optional)', description: 'Optional subtext or unit' }),
-            defineField({ name: 'icon', type: 'image', title: 'Stat Icon', description: 'Optional icon shown before the stat text.' }),
+            defineField({
+              name: 'icon',
+              type: 'string',
+              title: 'Stat Icon',
+              description: 'Choose an icon to display before the stat (same set as Why Choose Us).',
+              options: { list: heroStatIconOptions },
+            }),
           ],
           preview: { select: { label: 'label' }, prepare: ({ label }: { label?: string }) => ({ title: label || 'Stat' }) },
         },
