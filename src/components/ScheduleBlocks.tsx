@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { PortableText } from "@portabletext/react";
 import type { ScheduleBlock } from "@/lib/sanityQueries";
 
 interface ScheduleBlocksProps {
@@ -8,21 +9,29 @@ interface ScheduleBlocksProps {
 function ScheduleBlockRenderer({ block }: { block: ScheduleBlock }) {
   const title = block.blockTitle;
 
-  if (block._type === "scheduleBlockProgramOptions" && block.options?.length) {
+  if (block._type === "scheduleBlockProgramOptions") {
+    const optsBlock = block as import("@/lib/sanityQueries").ScheduleBlockProgramOptions;
     return (
       <div>
         {title && <h3 className="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wider">{title}</h3>}
-        <div className="flex flex-wrap gap-3">
-          {block.options.map((opt, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between gap-4 px-4 py-3 rounded-xl bg-muted/50 border border-border/50 min-w-[200px]"
-            >
-              <span className="text-foreground font-medium">{opt.label}</span>
-              {opt.price && <span className="text-primary font-semibold">{opt.price}</span>}
-            </div>
-          ))}
-        </div>
+        {optsBlock.richText && optsBlock.richText.length > 0 && (
+          <div className="prose prose-sm max-w-none prose-p:text-muted-foreground prose-headings:text-foreground mb-4">
+            <PortableText value={optsBlock.richText} />
+          </div>
+        )}
+        {optsBlock.options?.length ? (
+          <div className="flex flex-wrap gap-3">
+            {optsBlock.options.map((opt, i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between gap-4 px-4 py-3 rounded-xl bg-muted/50 border border-border/50 min-w-[200px]"
+              >
+                <span className="text-foreground font-medium">{opt.label}</span>
+                {opt.price && <span className="text-primary font-semibold">{opt.price}</span>}
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
     );
   }

@@ -77,6 +77,32 @@
   }
 }
 
+/* Sitewide consistent max-width for content (cards, rich text, images) */
+.content-max {
+  max-width: 75rem; /* 1200px */
+}
+
+/* Hero stats marquee - continuous right-to-left scroll */
+@keyframes hero-stats-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
+.hero-stats-marquee {
+  animation: hero-stats-scroll 25s linear infinite;
+}
+.hero-stats-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Utility to hide horizontal scrollbars while preserving scroll */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}
+
 @layer base {
   * {
     @apply border-border;

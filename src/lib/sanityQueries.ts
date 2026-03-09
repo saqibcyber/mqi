@@ -72,7 +72,7 @@ export interface Homepage {
   ctaSubtitle?: string;
   ctaButtons?: CtaButton[];
   footerNote?: string;
-  ctaHadith?: Hadith;
+  heroStats?: { label?: string; value?: string; icon?: { asset?: { url: string } } }[];
 }
 
 export interface ProgramCategoryRef {
@@ -110,6 +110,7 @@ export interface ScheduleBlockBase {
 
 export interface ScheduleBlockProgramOptions extends ScheduleBlockBase {
   _type: 'scheduleBlockProgramOptions';
+  richText?: unknown[];
   options?: { label: string; price?: string }[];
 }
 
@@ -365,6 +366,7 @@ const HOMEPAGE_QUERY = `*[_type == "homepage"][0]{
   heroTitle,
   heroSubtitle,
   heroCtaButtons[]{ label, to, isExternal, variant },
+  heroStats[]{ label, value, icon },
   programsSectionTitle,
   programsSectionSubtitle,
   "featuredPrograms": featuredPrograms[]->{
@@ -385,7 +387,6 @@ const HOMEPAGE_QUERY = `*[_type == "homepage"][0]{
   ctaSubtitle,
   ctaButtons[]{ label, to, isExternal, variant },
   footerNote,
-  ctaHadith{ arabic, english, reference },
   seo{ seoTitle, metaDescription }
 }`;
 
@@ -424,6 +425,7 @@ const PROGRAM_BY_SLUG_QUERY = `*[_type == "program" && slug.current == $slug][0]
     _type,
     _key,
     blockTitle,
+    richText,
     options[]{ label, price },
     days,
     time,

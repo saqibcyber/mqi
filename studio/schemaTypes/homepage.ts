@@ -1,6 +1,5 @@
 import { defineType, defineField } from 'sanity';
 import { seoFields } from './seo';
-import { hadith } from './hadith';
 
 export const homepage = defineType({
   name: 'homepage',
@@ -42,6 +41,24 @@ export const homepage = defineType({
       title: 'Hero CTA Buttons',
       group: 'hero',
       of: [{ type: 'ctaButton' }],
+    }),
+    defineField({
+      name: 'heroStats',
+      type: 'array',
+      title: 'Hero Stats Row',
+      group: 'hero',
+      description: 'Thin horizontal stats that scroll below the hero. Add items to display (e.g. "500+ Students", "15 Years").',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'label', type: 'string', title: 'Label', validation: (r) => r.required(), description: 'e.g. 500+ Students' }),
+            defineField({ name: 'value', type: 'string', title: 'Value (optional)', description: 'Optional subtext or unit' }),
+            defineField({ name: 'icon', type: 'image', title: 'Stat Icon', description: 'Optional icon shown before the stat text.' }),
+          ],
+          preview: { select: { label: 'label' }, prepare: ({ label }: { label?: string }) => ({ title: label || 'Stat' }) },
+        },
+      ],
     }),
     defineField({
       name: 'programsSectionTitle',
@@ -142,13 +159,6 @@ export const homepage = defineType({
       group: 'cta',
       rows: 2,
       description: 'Optional short note above or near the CTA (e.g. seasonal message).',
-    }),
-    defineField({
-      name: 'ctaHadith',
-      type: 'hadith',
-      title: 'Hadith (CTA Section)',
-      group: 'cta',
-      description: 'Optional Hadith displayed within the closing CTA banner.',
     }),
     ...seoFields,
   ],

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -53,12 +53,13 @@ const Index = () => {
   const featuredPrograms = homepage?.featuredPrograms ?? [];
   const programCategories = homepage?.programCategories?.length ? homepage.programCategories : defaultProgramCategories;
   const viewAllProgramsLabel = homepage?.viewAllProgramsLabel ?? "View All Programs";
-  const ctaHadith = homepage?.ctaHadith;
+  const heroStats = homepage?.heroStats ?? [];
 
   const allCategories = [...new Set((featuredPrograms as { category?: { slug?: string; title?: string } }[])
     .map((p) => p.category?.slug)
     .filter(Boolean))] as string[];
   const [programFilter, setProgramFilter] = useState<string | null>(null);
+  const programsScrollRef = useRef<HTMLDivElement>(null);
   const filteredPrograms = programFilter
     ? featuredPrograms.filter((p: { category?: { slug?: string } }) => p.category?.slug === programFilter)
     : featuredPrograms;
@@ -86,10 +87,10 @@ const Index = () => {
     <main>
       <PageSeo title={seo?.seoTitle} description={seo?.metaDescription} />
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden rounded-b-3xl">
         <div className="absolute inset-0">
-          <img src={heroImage} alt="Milton Qur'an Institute classroom" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-secondary/95 via-secondary/80 to-secondary/50" />
+          <img src={heroImage} alt="Milton Qur'an Institute classroom" className="w-full h-full object-cover rounded-b-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-r from-secondary/95 via-secondary/80 to-secondary/50 rounded-b-3xl" />
         </div>
         <div className="container relative z-10 py-20 md:py-32">
           <motion.div
@@ -101,10 +102,10 @@ const Index = () => {
             <p className="text-xs md:text-sm tracking-[0.25em] uppercase text-accent font-sans font-medium mb-1 text-left">
               {heroEyebrow}
             </p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.35]">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.4]">
               {heroTitle}
             </h1>
-            <p className="text-lg md:text-xl text-white/80 leading-relaxed">
+            <p className="text-lg md:text-xl text-white/80 leading-[1.5]">
               {heroSubtitle}
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
@@ -123,6 +124,38 @@ const Index = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Hero Stats - scrolling marquee */}
+      {heroStats.length > 0 && (
+        <div className="bg-background border-t border-border/50 py-3 overflow-hidden">
+          <div className="hero-stats-marquee flex items-center gap-16 px-4 md:px-8 whitespace-nowrap">
+            {[...heroStats, ...heroStats, ...heroStats].map((s: any, i: number) => {
+              const iconUrl =
+                s?.icon?.asset?.url
+                  ? urlFor(s.icon).width(32).height(32).fit("contain").url()
+                  : null;
+              return (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-3 text-sm md:text-base font-medium text-muted-foreground"
+                >
+                  {iconUrl && (
+                    <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary/5">
+                      <img src={iconUrl} alt="" className="h-5 w-5 object-contain" />
+                    </span>
+                  )}
+                  <span className="text-primary font-semibold">{s.label}</span>
+                  {s.value && (
+                    <span className="text-muted-foreground/80 text-sm md:text-base">
+                      {s.value}
+                    </span>
+                  )}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Our Programs */}
       <section className="py-20 md:py-28 pattern-stars">
@@ -163,36 +196,62 @@ const Index = () => {
                   })}
                 </div>
               )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-6xl mx-auto">
-                {filteredPrograms.map((prog: { _id: string; slug?: string; title?: string; category?: { slug?: string }; shortDescription?: string; audience?: string; schedule?: string; mainImage?: unknown }) => {
-                  const catSlug = prog.category?.slug ?? "programs";
-                  const imageUrl = prog.mainImage && typeof prog.mainImage === "object" && "asset" in prog.mainImage && prog.mainImage.asset
-                    ? urlFor(prog.mainImage as { asset?: { url: string } }).width(400).height(240).fit("crop").url()
-                    : null;
-                  return (
-                    <Link
-                      key={prog._id}
-                      to={`/programs/${catSlug}/${prog.slug ?? ""}`}
+              <div className="relative">
+              <div
+                ref={programsScrollRef}
+                className="flex gap-6 overflow-x-auto pb-4 -mx-2 px-2 md:mx-0 md:px-0 scrollbar-thin hide-scrollbar snap-x snap-mandatory"
+              >
+                  {filteredPrograms.map((prog: { _id: string; slug?: string; title?: string; category?: { slug?: string }; shortDescription?: string; mainImage?: unknown }) => {
+                    const catSlug = prog.category?.slug ?? "programs";
+                    const imageUrl = prog.mainImage && typeof prog.mainImage === "object" && "asset" in prog.mainImage && prog.mainImage.asset
+                      ? urlFor(prog.mainImage as { asset?: { url: string } }).width(400).height(240).fit("crop").url()
+                      : null;
+                    return (
+                      <Link
+                        key={prog._id}
+                        to={`/programs/${catSlug}/${prog.slug ?? ""}`}
+                        className="flex-shrink-0 w-[280px] snap-start"
+                      >
+                        <Card className="group h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50 overflow-hidden">
+                          {imageUrl && (
+                            <div className="aspect-video overflow-hidden">
+                              <img src={imageUrl} alt={prog.title ?? ""} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+                            </div>
+                          )}
+                          <CardContent className="p-6 space-y-3">
+                            <h3 className="text-lg font-semibold text-foreground">{prog.title}</h3>
+                            <p className="text-muted-foreground text-sm line-clamp-2">{prog.shortDescription}</p>
+                            <span className="inline-block text-primary font-medium text-sm hover:underline">
+                              Learn more →
+                            </span>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    );
+                  })}
+                </div>
+                {filteredPrograms.length > 0 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => programsScrollRef.current?.scrollBy({ left: -320, behavior: "smooth" })}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-10 h-10 rounded-full bg-background/90 shadow-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-background transition-colors z-10"
+                      aria-label="Scroll left"
                     >
-                      <Card className="group h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border/50 overflow-hidden">
-                        {imageUrl && (
-                          <div className="aspect-video overflow-hidden">
-                            <img src={imageUrl} alt={prog.title ?? ""} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
-                          </div>
-                        )}
-                        <CardContent className="p-6 space-y-3">
-                          <h3 className="text-lg font-semibold text-foreground">{prog.title}</h3>
-                          <p className="text-muted-foreground text-sm line-clamp-2">{prog.shortDescription}</p>
-                          <span className="inline-block text-primary font-medium text-sm hover:underline">
-                            Learn more →
-                          </span>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  );
-                })}
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => programsScrollRef.current?.scrollBy({ left: 320, behavior: "smooth" })}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-10 h-10 rounded-full bg-background/90 shadow-md border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-background transition-colors z-10"
+                      aria-label="Scroll right"
+                    >
+                      ›
+                    </button>
+                  </>
+                )}
               </div>
-              <div className="flex justify-start mt-10 max-w-6xl mx-auto">
+              <div className="flex justify-center mt-10">
                 <Link to="/programs">
                   <Button variant="default" size="lg" className="rounded-2xl font-semibold px-12 py-7 text-base shadow-lg hover:shadow-xl bg-primary text-primary-foreground hover:bg-primary/90">
                     {viewAllProgramsLabel}
@@ -246,7 +305,7 @@ const Index = () => {
             </motion.div>
 
             {aboutTextFull && (
-              <p className="text-muted-foreground text-base md:text-lg leading-relaxed whitespace-pre-line mb-10 max-w-3xl mx-auto">
+              <p className="text-muted-foreground text-base md:text-lg leading-relaxed whitespace-pre-line mb-10 max-w-4xl mx-auto">
                 {aboutTextFull}
               </p>
             )}
@@ -308,7 +367,7 @@ const Index = () => {
               <h2 className="text-3xl md:text-4xl font-bold text-foreground">{testimonialsSectionTitle}</h2>
               <div className="geometric-divider w-24 mx-auto mt-4 mb-4" />
             </motion.div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 content-max mx-auto">
               {testimonials.map((t, i) => (
                 <motion.div
                   key={t.name ?? i}
@@ -339,7 +398,7 @@ const Index = () => {
             <div className="geometric-divider w-24 mx-auto mt-4 mb-4" />
             <p className="text-muted-foreground max-w-2xl mx-auto">{whyChooseUsSectionSubtitle}</p>
           </motion.div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 content-max mx-auto">
             {whyChooseUsItems.map((item, i) => {
               const Icon = getIcon(item.icon);
               return (
@@ -365,21 +424,6 @@ const Index = () => {
         <div className="container text-center space-y-6">
           {footerNote && (
             <p className="text-secondary-foreground/90 text-sm max-w-xl mx-auto">{footerNote}</p>
-          )}
-          {ctaHadith && (ctaHadith.arabic || ctaHadith.english) && (
-            <blockquote className="max-w-2xl mx-auto space-y-3 py-6">
-              {ctaHadith.arabic && (
-                <p className="text-2xl md:text-3xl font-arabic text-secondary-foreground leading-loose" dir="rtl" style={{ fontFamily: "'Amiri', 'Traditional Arabic', 'Scheherazade New', serif" }}>
-                  {ctaHadith.arabic}
-                </p>
-              )}
-              {ctaHadith.english && (
-                <p className="text-secondary-foreground/90 text-lg italic">"{ctaHadith.english}"</p>
-              )}
-              {ctaHadith.reference && (
-                <footer className="text-secondary-foreground/60 text-sm">— {ctaHadith.reference}</footer>
-              )}
-            </blockquote>
           )}
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-foreground">{ctaTitle}</h2>
           <p className="text-secondary-foreground/80 max-w-xl mx-auto text-lg">{ctaSubtitle}</p>

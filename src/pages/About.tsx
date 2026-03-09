@@ -121,7 +121,7 @@ const About = () => {
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mb-20 md:mb-28">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 tracking-tight">Our Values</h2>
             <div className="geometric-divider w-16 mb-10" />
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 content-max mx-auto">
               {ourValuesCards.map((v, i) => {
                 const Icon = getIcon(v.icon);
                 return (

@@ -12,6 +12,13 @@ export const scheduleBlockProgramOptions = defineType({
   fields: [
     defineField({ name: 'blockTitle', type: 'string', title: 'Block Title', initialValue: 'Program Options' }),
     defineField({
+      name: 'richText',
+      type: 'array',
+      title: 'Additional Content (Rich Text)',
+      of: [{ type: 'block' }],
+      description: 'Optional rich text content displayed above or alongside the options.',
+    }),
+    defineField({
       name: 'options',
       type: 'array',
       title: 'Options',
