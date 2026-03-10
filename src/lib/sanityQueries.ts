@@ -171,6 +171,8 @@ export interface Program {
   specialOffers?: SpecialOffer[];
   jotformUrl?: string;
   jotformId?: string;
+   feeStructureCtaLabel?: string;
+   feeStructureCtaUrl?: string;
   faqs?: ProgramFAQ[];
   seo?: SeoData;
 }
@@ -438,6 +440,8 @@ const PROGRAM_BY_SLUG_QUERY = `*[_type == "program" && slug.current == $slug][0]
   specialOffers[]{ title, description },
   jotformUrl,
   jotformId,
+  feeStructureCtaLabel,
+  feeStructureCtaUrl,
   faqs[]{ q, a },
   seo{ seoTitle, metaDescription }
 }`;

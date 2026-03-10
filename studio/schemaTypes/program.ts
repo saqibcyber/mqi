@@ -134,6 +134,20 @@ export const program = defineType({
       description: 'Full URL or form ID. Button links to this (opens in new tab).',
     }),
     defineField({
+      name: 'feeStructureCtaLabel',
+      type: 'string',
+      title: 'Fee Structure CTA Label',
+      group: 'registration',
+      description: 'Optional label for the fee structure request button. Defaults to "Request Fee Structure".',
+    }),
+    defineField({
+      name: 'feeStructureCtaUrl',
+      type: 'string',
+      title: 'Fee Structure CTA URL',
+      group: 'registration',
+      description: 'Optional URL (or mailto:) used when requesting the fee structure. Button is hidden if this is empty.',
+    }),
+    defineField({
       name: 'jotformId',
       type: 'string',
       title: 'Jotform ID (legacy)',

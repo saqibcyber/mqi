@@ -54,6 +54,8 @@ const ProgramDetail = () => {
 
   const scheduleBlocks = program.scheduleBlocks ?? [];
   const formUrl = getJotformUrl(program.jotformUrl ?? program.jotformId);
+  const feeStructureUrl = program.feeStructureCtaUrl;
+  const feeStructureLabel = program.feeStructureCtaLabel?.trim() || "Request Fee Structure";
 
   const ProgramCta = () =>
     formUrl ? (
@@ -179,7 +181,19 @@ const ProgramDetail = () => {
             <p className="text-sm text-muted-foreground mb-4">
               {formUrl ? "Complete the registration form to secure your spot." : "View our programs to get started."}
             </p>
-            <ProgramCta />
+            <div className="flex flex-wrap gap-4 items-center">
+              <ProgramCta />
+              {feeStructureUrl && (
+                <CtaLink
+                  label={feeStructureLabel}
+                  to={feeStructureUrl}
+                  isExternal
+                  variant="accent"
+                  compact
+                  className="bg-background text-primary border border-primary/40 hover:bg-primary/5"
+                />
+              )}
+            </div>
           </section>
 
           {program.faqs && program.faqs.length > 0 && (
